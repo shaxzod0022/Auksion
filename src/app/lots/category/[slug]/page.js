@@ -2,6 +2,7 @@ import { AboutUs, LotHero, LotsList } from "@/components";
 import LotSearchBar from "@/components/lots/LotSearchBar";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
+import { Suspense } from "react";
 
 export default async function CategoryLotsPage({ params, searchParams }) {
   const { slug } = await params;
@@ -61,7 +62,9 @@ export default async function CategoryLotsPage({ params, searchParams }) {
       <LotHero title={category?.name} image={category?.image} />
 
       <div className="max-w-[1900px] mx-auto 2xl:px-32 xl:px-28 lg:px-16 md:px-10 sm:px-8 px-4 -mt-10 relative z-10">
-        <LotSearchBar />
+        <Suspense fallback={<div className="h-24 bg-white/50 animate-pulse rounded-2xl" />}>
+          <LotSearchBar />
+        </Suspense>
       </div>
 
       <div className="max-w-[1900px] mx-auto 2xl:px-32 xl:px-28 lg:px-16 md:px-10 sm:px-8 px-4 mt-10">
@@ -74,7 +77,9 @@ export default async function CategoryLotsPage({ params, searchParams }) {
         </Link>
       </div>
 
-      <LotsList data={lotsResponse.data} pagination={lotsResponse.pagination} />
+      <Suspense fallback={<div className="p-20 text-center text-gray-400 animate-pulse">Yuklanmoqda...</div>}>
+        <LotsList data={lotsResponse.data} pagination={lotsResponse.pagination} />
+      </Suspense>
       <AboutUs />
     </main>
   );
