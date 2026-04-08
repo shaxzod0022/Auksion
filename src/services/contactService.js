@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api/contact";
+const API_URL = "https://auksion-backend-production.up.railway.app/api/contact";
 
 const getAuthHeaders = () => {
   if (typeof window !== "undefined") {

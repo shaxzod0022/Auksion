@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:8080/api/lot-type";
+const API_URL =
+  "https://auksion-backend-production.up.railway.app/api/lot-type";
 
 const getAuthHeaders = () => {
   const token = sessionStorage.getItem("adminToken");

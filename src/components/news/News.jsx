@@ -4,7 +4,7 @@ import { styles } from "@/styles/styles";
 import { Calendar, Eye, ChevronLeft, ChevronRight } from "lucide-react";
 import Link from "next/link";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "https://auksion-backend-production.up.railway.app";
 
 export default function News({ initialData = [], totalPages = 1, currentPage = 1 }) {
   const page = parseInt(currentPage);

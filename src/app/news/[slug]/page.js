@@ -16,14 +16,18 @@ export async function generateMetadata({ params }) {
       openGraph: {
         title: news.name,
         description: news.shortDescription,
-        images: [`http://localhost:8080/upload/${news.image}`],
+        images: [
+          `https://auksion-backend-production.up.railway.app/upload/${news.image}`,
+        ],
         type: "article",
       },
       twitter: {
         card: "summary_large_image",
         title: news.name,
         description: news.shortDescription,
-        images: [`http://localhost:8080/upload/${news.image}`],
+        images: [
+          `https://auksion-backend-production.up.railway.app/upload/${news.image}`,
+        ],
       },
     };
   } catch (error) {

@@ -3,16 +3,17 @@ import LotSearchBar from "@/components/lots/LotSearchBar";
 
 export const metadata = {
   title: "Barcha Faol Lotlar - Universal Auksion",
-  description: "Barcha kategoriyalardagi eng so'nggi auksion lotlari bilan tanishing. Ko'chmas mulk, avtotransport va boshqa ko'plab savdolarda qatnashing.",
+  description:
+    "Barcha kategoriyalardagi eng so'nggi auksion lotlari bilan tanishing. Ko'chmas mulk, avtotransport va boshqa ko'plab savdolarda qatnashing.",
 };
 
 export default async function AllLotsPage({ searchParams }) {
-  const { 
-    page = 1, 
-    name = "", 
-    category = "", 
-    province = "", 
-    region = "" 
+  const {
+    page = 1,
+    name = "",
+    category = "",
+    province = "",
+    region = "",
   } = await searchParams;
 
   const fetchAllLots = async () => {
@@ -23,12 +24,15 @@ export default async function AllLotsPage({ searchParams }) {
         name,
         category,
         province,
-        region
+        region,
       });
-      
-      const res = await fetch(`http://localhost:8080/api/lot?${query.toString()}`, {
-        next: { revalidate: 60 },
-      });
+
+      const res = await fetch(
+        `https://auksion-backend-production.up.railway.app/api/lot?${query.toString()}`,
+        {
+          next: { revalidate: 60 },
+        },
+      );
       return res.json();
     } catch (error) {
       console.error("Error fetching all lots on server:", error);

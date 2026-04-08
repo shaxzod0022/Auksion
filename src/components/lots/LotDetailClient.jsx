@@ -67,7 +67,7 @@ export default function LotDetailClient({ lot }) {
       <div className="flex-1 space-y-8">
         <div className="bg-white p-4 rounded-2xl shadow-xl shadow-blue-900/5 overflow-hidden group">
           <img
-            src={`http://localhost:8080/upload/${lot.image}`}
+            src={`https://auksion-backend-production.up.railway.app/upload/${lot.image}`}
             alt={lot.name}
             className="w-full h-auto aspect-video object-cover rounded-xl group-hover:scale-105 transition-transform duration-700"
           />

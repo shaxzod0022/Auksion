@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api/admin";
+const API_URL = "https://auksion-backend-production.up.railway.app/api/admin";
 
 export const login = async (email, password) => {
   try {

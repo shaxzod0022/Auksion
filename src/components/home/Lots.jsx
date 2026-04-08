@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { styles } from "@/styles/styles";
 import Link from "next/link";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "https://auksion-backend-production.up.railway.app";
 
 const Timer = ({ targetDate }) => {
   const [timeLeft, setTimeLeft] = useState({

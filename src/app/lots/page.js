@@ -6,18 +6,26 @@ export const metadata = {
   description:
     "Sotuvdagi barcha joriy lotlar bilan tanishing: ko'chmas mulk, avtotransport vositalari va maxsus texnikalar. Onlayn auksionlarda qatnashing, o'z narxingizni taklif qiling va qulay shartlarda sotib oling.",
   keywords: [
-    "lotlar ro'yxati", "auksion savdolari", "ko'chmas mulk auksioni",
-    "avtomobillar savdosi", "arzon mulklar", "onlayn auksionda qatnashish",
-    "savdoga qo'yilgan mulklar", "Universal Auksion lotlari",
+    "lotlar ro'yxati",
+    "auksion savdolari",
+    "ko'chmas mulk auksioni",
+    "avtomobillar savdosi",
+    "arzon mulklar",
+    "onlayn auksionda qatnashish",
+    "savdoga qo'yilgan mulklar",
+    "Universal Auksion lotlari",
   ],
 };
 
 export default async function Page() {
   const fetchCategories = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/category", {
-        next: { revalidate: 60 },
-      });
+      const res = await fetch(
+        "https://auksion-backend-production.up.railway.app/api/category",
+        {
+          next: { revalidate: 60 },
+        },
+      );
       return res.json();
     } catch (error) {
       console.error("Error fetching categories on server:", error);

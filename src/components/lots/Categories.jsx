@@ -2,7 +2,7 @@
 import { styles } from "@/styles/styles";
 import { useRouter } from "next/navigation";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "https://auksion-backend-production.up.railway.app";
 
 export default function Categories({ initialData = [] }) {
   const router = useRouter();

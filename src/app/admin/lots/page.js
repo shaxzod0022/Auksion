@@ -85,7 +85,7 @@ export default function LotsPage() {
       setCategories(catsData);
       setLotTypes(typesData);
       setProvinces(provincesData);
-      
+
       // Fetch all regions for initial table display or filtering
       const regionsData = await regionService.getAllRegions();
       setRegions(regionsData);
@@ -130,9 +130,11 @@ export default function LotsPage() {
         consultationPrice: lot.consultationPrice,
         status: lot.status,
       });
-      setImagePreview(`http://localhost:8080/upload/${lot.image}`);
+      setImagePreview(
+        `https://auksion-backend-production.up.railway.app/upload/${lot.image}`,
+      );
       setSelectedImage(null);
-      
+
       if (lot.province?._id || lot.province) {
         handleProvinceChange(lot.province?._id || lot.province, true);
       }
@@ -271,11 +273,14 @@ export default function LotsPage() {
         </button>
       </div>
 
-      <div className="admin-search-container" style={{ marginBottom: "1.5rem" }}>
-        <LotSearchBar 
-          onSearch={handleAdminSearch} 
-          onClear={handleAdminClear} 
-          className="admin-card" 
+      <div
+        className="admin-search-container"
+        style={{ marginBottom: "1.5rem" }}
+      >
+        <LotSearchBar
+          onSearch={handleAdminSearch}
+          onClear={handleAdminClear}
+          className="admin-card"
           style={{ padding: "1.5rem", background: "#fff" }}
         />
       </div>
@@ -333,7 +338,7 @@ export default function LotsPage() {
                       }}
                     >
                       <img
-                        src={`http://localhost:8080/upload/${lot.image}`}
+                        src={`https://auksion-backend-production.up.railway.app/upload/${lot.image}`}
                         alt={lot.name}
                         style={{
                           width: "100%",
@@ -361,7 +366,12 @@ export default function LotsPage() {
                     <div style={{ fontSize: "0.875rem" }}>
                       {lot.category?.name || "—"}
                     </div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--admin-text-muted)" }}>
+                    <div
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "var(--admin-text-muted)",
+                      }}
+                    >
                       {lot.province?.name || "—"}, {lot.region?.name || "—"}
                     </div>
                     <div
@@ -413,7 +423,10 @@ export default function LotsPage() {
                       <button
                         onClick={() => handleOpenPreview(lot)}
                         className="admin-nav-item"
-                        style={{ padding: "0.5rem", color: "var(--admin-accent)" }}
+                        style={{
+                          padding: "0.5rem",
+                          color: "var(--admin-accent)",
+                        }}
                       >
                         <Eye size={18} />
                       </button>
@@ -536,7 +549,10 @@ export default function LotsPage() {
                           className="admin-input"
                           value={formData.lotNumber}
                           disabled
-                          style={{ background: "#f8fafc", cursor: "not-allowed" }}
+                          style={{
+                            background: "#f8fafc",
+                            cursor: "not-allowed",
+                          }}
                         />
                       </div>
                     )}
@@ -732,8 +748,10 @@ export default function LotsPage() {
                         onChange={(e) => handleProvinceChange(e.target.value)}
                       >
                         <option value="">Viloyatni tanlang...</option>
-                        {provinces.map(p => (
-                          <option key={p._id} value={p._id}>{p.name}</option>
+                        {provinces.map((p) => (
+                          <option key={p._id} value={p._id}>
+                            {p.name}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -743,12 +761,16 @@ export default function LotsPage() {
                         className="admin-input"
                         required
                         value={formData.region}
-                        onChange={(e) => setFormData({ ...formData, region: e.target.value })}
+                        onChange={(e) =>
+                          setFormData({ ...formData, region: e.target.value })
+                        }
                         disabled={!formData.province}
                       >
                         <option value="">Tuman tanlang...</option>
-                        {filteredRegions.map(r => (
-                          <option key={r._id} value={r._id}>{r.name}</option>
+                        {filteredRegions.map((r) => (
+                          <option key={r._id} value={r._id}>
+                            {r.name}
+                          </option>
                         ))}
                       </select>
                     </div>
@@ -1073,7 +1095,12 @@ export default function LotsPage() {
                 <h2 style={{ fontSize: "1.25rem", fontWeight: "bold" }}>
                   Lot Ma'lumotlari
                 </h2>
-                <p style={{ fontSize: "0.875rem", color: "var(--admin-text-muted)" }}>
+                <p
+                  style={{
+                    fontSize: "0.875rem",
+                    color: "var(--admin-text-muted)",
+                  }}
+                >
                   {previewLot.lotNumber}
                 </p>
               </div>
@@ -1091,79 +1118,322 @@ export default function LotsPage() {
             </div>
 
             <div style={{ overflowY: "auto", padding: "2rem", flex: 1 }}>
-              <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: "2rem" }}>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "300px 1fr",
+                  gap: "2rem",
+                }}
+              >
                 <div>
-                  <div style={{ width: "100%", borderRadius: "1rem", overflow: "hidden", aspectRatio: "4/3", background: "#f1f5f9", marginBottom: "1rem" }}>
+                  <div
+                    style={{
+                      width: "100%",
+                      borderRadius: "1rem",
+                      overflow: "hidden",
+                      aspectRatio: "4/3",
+                      background: "#f1f5f9",
+                      marginBottom: "1rem",
+                    }}
+                  >
                     <img
-                      src={`http://localhost:8080/upload/${previewLot.image}`}
+                      src={`https://auksion-backend-production.up.railway.app/upload/${previewLot.image}`}
                       alt={previewLot.name}
-                      style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
                     />
                   </div>
                   <div className="admin-card" style={{ padding: "1rem" }}>
-                    <p style={{ fontSize: "0.75rem", color: "var(--admin-text-muted)", marginBottom: "0.25rem" }}>STATUS</p>
-                    <span style={{
-                      padding: "0.25rem 0.6rem",
-                      borderRadius: "0.5rem",
-                      fontSize: "0.75rem",
-                      fontWeight: "700",
-                      background: previewLot.status === "active" ? "#dcfce7" : "#fee2e2",
-                      color: previewLot.status === "active" ? "#166534" : "#991b1b",
-                      textTransform: "uppercase"
-                    }}>
+                    <p
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "var(--admin-text-muted)",
+                        marginBottom: "0.25rem",
+                      }}
+                    >
+                      STATUS
+                    </p>
+                    <span
+                      style={{
+                        padding: "0.25rem 0.6rem",
+                        borderRadius: "0.5rem",
+                        fontSize: "0.75rem",
+                        fontWeight: "700",
+                        background:
+                          previewLot.status === "active"
+                            ? "#dcfce7"
+                            : "#fee2e2",
+                        color:
+                          previewLot.status === "active"
+                            ? "#166534"
+                            : "#991b1b",
+                        textTransform: "uppercase",
+                      }}
+                    >
                       {previewLot.status === "active" ? "Faol" : "Nofaol"}
                     </span>
                   </div>
                 </div>
 
                 <div>
-                  <h3 style={{ fontSize: "1.5rem", fontWeight: "800", marginBottom: "1rem", color: "var(--admin-text-dark)" }}>{previewLot.name}</h3>
-                  
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", marginBottom: "2rem" }}>
-                    <div style={{ padding: "1rem", background: "rgba(59, 130, 246, 0.05)", borderRadius: "0.75rem" }}>
-                      <p style={{ fontSize: "0.75rem", color: "var(--admin-text-muted)", fontWeight: "600", marginBottom: "0.25rem" }}>BOSHLANG'ICH NARX</p>
-                      <p style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--admin-accent)" }}>{previewLot.startPrice?.toLocaleString()} UZS</p>
+                  <h3
+                    style={{
+                      fontSize: "1.5rem",
+                      fontWeight: "800",
+                      marginBottom: "1rem",
+                      color: "var(--admin-text-dark)",
+                    }}
+                  >
+                    {previewLot.name}
+                  </h3>
+
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "1.5rem",
+                      marginBottom: "2rem",
+                    }}
+                  >
+                    <div
+                      style={{
+                        padding: "1rem",
+                        background: "rgba(59, 130, 246, 0.05)",
+                        borderRadius: "0.75rem",
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontSize: "0.75rem",
+                          color: "var(--admin-text-muted)",
+                          fontWeight: "600",
+                          marginBottom: "0.25rem",
+                        }}
+                      >
+                        BOSHLANG'ICH NARX
+                      </p>
+                      <p
+                        style={{
+                          fontSize: "1.25rem",
+                          fontWeight: "800",
+                          color: "var(--admin-accent)",
+                        }}
+                      >
+                        {previewLot.startPrice?.toLocaleString()} UZS
+                      </p>
                     </div>
-                    <div style={{ padding: "1rem", background: "rgba(59, 130, 246, 0.05)", borderRadius: "0.75rem" }}>
-                      <p style={{ fontSize: "0.75rem", color: "var(--admin-text-muted)", fontWeight: "600", marginBottom: "0.25rem" }}>QADAM MIQDORI</p>
-                      <p style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--admin-accent)" }}>{previewLot.firstStep?.toLocaleString()} UZS</p>
+                    <div
+                      style={{
+                        padding: "1rem",
+                        background: "rgba(59, 130, 246, 0.05)",
+                        borderRadius: "0.75rem",
+                      }}
+                    >
+                      <p
+                        style={{
+                          fontSize: "0.75rem",
+                          color: "var(--admin-text-muted)",
+                          fontWeight: "600",
+                          marginBottom: "0.25rem",
+                        }}
+                      >
+                        QADAM MIQDORI
+                      </p>
+                      <p
+                        style={{
+                          fontSize: "1.25rem",
+                          fontWeight: "800",
+                          color: "var(--admin-accent)",
+                        }}
+                      >
+                        {previewLot.firstStep?.toLocaleString()} UZS
+                      </p>
                     </div>
                   </div>
 
                   <div style={{ display: "grid", gap: "1.5rem" }}>
-                    <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: "1rem", borderBottom: "1px solid #f1f5f9", paddingBottom: "0.75rem" }}>
-                      <span style={{ color: "var(--admin-text-muted)", fontSize: "0.875rem", fontWeight: "600" }}>Kategoriya:</span>
-                      <span style={{ fontSize: "0.875rem", fontWeight: "700" }}>{previewLot.category?.name || "—"}</span>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "140px 1fr",
+                        gap: "1rem",
+                        borderBottom: "1px solid #f1f5f9",
+                        paddingBottom: "0.75rem",
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: "var(--admin-text-muted)",
+                          fontSize: "0.875rem",
+                          fontWeight: "600",
+                        }}
+                      >
+                        Kategoriya:
+                      </span>
+                      <span style={{ fontSize: "0.875rem", fontWeight: "700" }}>
+                        {previewLot.category?.name || "—"}
+                      </span>
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: "1rem", borderBottom: "1px solid #f1f5f9", paddingBottom: "0.75rem" }}>
-                      <span style={{ color: "var(--admin-text-muted)", fontSize: "0.875rem", fontWeight: "600" }}>Savdo shakli:</span>
-                      <span style={{ fontSize: "0.875rem", fontWeight: "700" }}>{previewLot.lotType?.name || "—"}</span>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "140px 1fr",
+                        gap: "1rem",
+                        borderBottom: "1px solid #f1f5f9",
+                        paddingBottom: "0.75rem",
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: "var(--admin-text-muted)",
+                          fontSize: "0.875rem",
+                          fontWeight: "600",
+                        }}
+                      >
+                        Savdo shakli:
+                      </span>
+                      <span style={{ fontSize: "0.875rem", fontWeight: "700" }}>
+                        {previewLot.lotType?.name || "—"}
+                      </span>
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: "1rem", borderBottom: "1px solid #f1f5f9", paddingBottom: "0.75rem" }}>
-                      <span style={{ color: "var(--admin-text-muted)", fontSize: "0.875rem", fontWeight: "600" }}>Manzil:</span>
-                      <span style={{ fontSize: "0.875rem" }}>{previewLot.province?.name}, {previewLot.region?.name}, {previewLot.address}</span>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "140px 1fr",
+                        gap: "1rem",
+                        borderBottom: "1px solid #f1f5f9",
+                        paddingBottom: "0.75rem",
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: "var(--admin-text-muted)",
+                          fontSize: "0.875rem",
+                          fontWeight: "600",
+                        }}
+                      >
+                        Manzil:
+                      </span>
+                      <span style={{ fontSize: "0.875rem" }}>
+                        {previewLot.province?.name}, {previewLot.region?.name},{" "}
+                        {previewLot.address}
+                      </span>
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: "1rem", borderBottom: "1px solid #f1f5f9", paddingBottom: "0.75rem" }}>
-                      <span style={{ color: "var(--admin-text-muted)", fontSize: "0.875rem", fontWeight: "600" }}>Mijoz:</span>
-                      <span style={{ fontSize: "0.875rem" }}>{previewLot.customer}</span>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "140px 1fr",
+                        gap: "1rem",
+                        borderBottom: "1px solid #f1f5f9",
+                        paddingBottom: "0.75rem",
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: "var(--admin-text-muted)",
+                          fontSize: "0.875rem",
+                          fontWeight: "600",
+                        }}
+                      >
+                        Mijoz:
+                      </span>
+                      <span style={{ fontSize: "0.875rem" }}>
+                        {previewLot.customer}
+                      </span>
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: "1rem", borderBottom: "1px solid #f1f5f9", paddingBottom: "0.75rem" }}>
-                      <span style={{ color: "var(--admin-text-muted)", fontSize: "0.875rem", fontWeight: "600" }}>Boshlanish vaqti:</span>
-                      <span style={{ fontSize: "0.875rem" }}>{new Date(previewLot.startDate).toLocaleString('uz-UZ')}</span>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "140px 1fr",
+                        gap: "1rem",
+                        borderBottom: "1px solid #f1f5f9",
+                        paddingBottom: "0.75rem",
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: "var(--admin-text-muted)",
+                          fontSize: "0.875rem",
+                          fontWeight: "600",
+                        }}
+                      >
+                        Boshlanish vaqti:
+                      </span>
+                      <span style={{ fontSize: "0.875rem" }}>
+                        {new Date(previewLot.startDate).toLocaleString("uz-UZ")}
+                      </span>
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: "1rem", borderBottom: "1px solid #f1f5f9", paddingBottom: "0.75rem" }}>
-                      <span style={{ color: "var(--admin-text-muted)", fontSize: "0.875rem", fontWeight: "600" }}>Tugash vaqti:</span>
-                      <span style={{ fontSize: "0.875rem" }}>{new Date(previewLot.endDate).toLocaleString('uz-UZ')}</span>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "140px 1fr",
+                        gap: "1rem",
+                        borderBottom: "1px solid #f1f5f9",
+                        paddingBottom: "0.75rem",
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: "var(--admin-text-muted)",
+                          fontSize: "0.875rem",
+                          fontWeight: "600",
+                        }}
+                      >
+                        Tugash vaqti:
+                      </span>
+                      <span style={{ fontSize: "0.875rem" }}>
+                        {new Date(previewLot.endDate).toLocaleString("uz-UZ")}
+                      </span>
                     </div>
-                    <div style={{ display: "grid", gridTemplateColumns: "140px 1fr", gap: "1rem", borderBottom: "1px solid #f1f5f9", paddingBottom: "0.75rem" }}>
-                      <span style={{ color: "var(--admin-text-muted)", fontSize: "0.875rem", fontWeight: "600" }}>Telefonlar:</span>
-                      <span style={{ fontSize: "0.875rem" }}>{previewLot.phone1} {previewLot.phone2 && `, ${previewLot.phone2}`}</span>
+                    <div
+                      style={{
+                        display: "grid",
+                        gridTemplateColumns: "140px 1fr",
+                        gap: "1rem",
+                        borderBottom: "1px solid #f1f5f9",
+                        paddingBottom: "0.75rem",
+                      }}
+                    >
+                      <span
+                        style={{
+                          color: "var(--admin-text-muted)",
+                          fontSize: "0.875rem",
+                          fontWeight: "600",
+                        }}
+                      >
+                        Telefonlar:
+                      </span>
+                      <span style={{ fontSize: "0.875rem" }}>
+                        {previewLot.phone1}{" "}
+                        {previewLot.phone2 && `, ${previewLot.phone2}`}
+                      </span>
                     </div>
                   </div>
 
                   <div style={{ marginTop: "2rem" }}>
-                    <p style={{ fontSize: "0.75rem", color: "var(--admin-text-muted)", fontWeight: "600", marginBottom: "0.75rem" }}>TAVSIFI</p>
-                    <div style={{ fontSize: "0.875rem", lineHeight: "1.6", color: "#475569", background: "#f8fafc", padding: "1rem", borderRadius: "0.5rem" }}>
+                    <p
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "var(--admin-text-muted)",
+                        fontWeight: "600",
+                        marginBottom: "0.75rem",
+                      }}
+                    >
+                      TAVSIFI
+                    </p>
+                    <div
+                      style={{
+                        fontSize: "0.875rem",
+                        lineHeight: "1.6",
+                        color: "#475569",
+                        background: "#f8fafc",
+                        padding: "1rem",
+                        borderRadius: "0.5rem",
+                      }}
+                    >
                       {previewLot.description}
                     </div>
                   </div>
@@ -1179,7 +1449,7 @@ export default function LotsPage() {
                 borderBottomLeftRadius: "1.25rem",
                 borderBottomRightRadius: "1.25rem",
                 display: "flex",
-                justifyContent: "flex-end"
+                justifyContent: "flex-end",
               }}
             >
               <button
