@@ -64,12 +64,67 @@ export const getAllAdmins = async () => {
   }
 };
 
+export const createAdmin = async (adminData) => {
+  try {
+    const token = sessionStorage.getItem("adminToken");
+    const response = await fetch(`${API_URL}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(adminData),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Create admin error:", error);
+    return { success: false, message: "Serverda xatolik yuz berdi" };
+  }
+};
+
+export const updateAdmin = async (id, adminData) => {
+  try {
+    const token = sessionStorage.getItem("adminToken");
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(adminData),
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Update admin error:", error);
+    return { success: false, message: "Serverda xatolik yuz berdi" };
+  }
+};
+
+export const deleteAdmin = async (id) => {
+  try {
+    const token = sessionStorage.getItem("adminToken");
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return await response.json();
+  } catch (error) {
+    console.error("Delete admin error:", error);
+    return { success: false, message: "Serverda xatolik yuz berdi" };
+  }
+};
+
 // Also keep default for backward compatibility if needed, but we'll update consumers
 const adminService = {
   login,
   verifyToken,
   getDashboardStats,
-  getAllAdmins
+  getAllAdmins,
+  createAdmin,
+  updateAdmin,
+  deleteAdmin,
 };
 
 export default adminService;

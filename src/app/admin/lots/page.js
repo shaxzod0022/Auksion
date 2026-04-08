@@ -24,6 +24,7 @@ import {
   LayoutGrid,
   Package,
 } from "lucide-react";
+import LotSearchBar from "@/components/lots/LotSearchBar";
 
 export default function LotsPage() {
   const [lots, setLots] = useState([]);
@@ -70,11 +71,11 @@ export default function LotsPage() {
     fetchInitialData();
   }, []);
 
-  const fetchInitialData = async () => {
+  const fetchInitialData = async (searchParams = {}) => {
     setLoading(true);
     try {
       const [lotsData, catsData, typesData, provincesData] = await Promise.all([
-        lotService.getAllLots(),
+        lotService.getAllLots(searchParams),
         categoryService.getAllCategories(),
         lotTypeService.getAllLotTypes(),
         provinceService.getAllProvinces(),
@@ -93,6 +94,14 @@ export default function LotsPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAdminSearch = (filters) => {
+    fetchInitialData(filters);
+  };
+
+  const handleAdminClear = () => {
+    fetchInitialData();
   };
 
   const handleOpenModal = (lot = null) => {
@@ -260,6 +269,15 @@ export default function LotsPage() {
           <Plus size={20} />
           Yangi Lot Qo'shish
         </button>
+      </div>
+
+      <div className="admin-search-container" style={{ marginBottom: "1.5rem" }}>
+        <LotSearchBar 
+          onSearch={handleAdminSearch} 
+          onClear={handleAdminClear} 
+          className="admin-card" 
+          style={{ padding: "1.5rem", background: "#fff" }}
+        />
       </div>
 
       {loading ? (

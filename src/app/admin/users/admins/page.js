@@ -116,15 +116,17 @@ export default function AdminsPage() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Haqiqatan ham ushbu adminni o'chirmoqchimisiz?")) return;
+  const handleDelete = async (id, name) => {
+    if (!window.confirm(`Haqiqatan ham "${name}" adminini o'chirmoqchimisiz?`)) return;
     try {
       const result = await adminService.deleteAdmin(id);
-      if (result.message) {
+      if (result.message && result.message.includes("muvaffaqiyatli")) {
         fetchAdmins();
+      } else {
+        alert(result.message || "O'chirishda xatolik yuz berdi");
       }
     } catch (err) {
-      alert("O'chirishda xatolik");
+      alert("Server bilan aloqa uzildi");
     }
   };
 
@@ -186,7 +188,7 @@ export default function AdminsPage() {
                         <Edit2 size={18} />
                       </button>
                       {currentAdmin && currentAdmin._id !== admin._id && (
-                        <button onClick={() => handleDelete(admin._id)} className="admin-nav-item" style={{ padding: '0.5rem', color: '#ef4444' }}>
+                        <button onClick={() => handleDelete(admin._id, admin.firstName)} className="admin-nav-item" style={{ padding: '0.5rem', color: '#ef4444' }}>
                           <Trash2 size={18} />
                         </button>
                       )}
