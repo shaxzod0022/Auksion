@@ -288,7 +288,7 @@ export default function Register() {
       </div>
 
       <div className="w-full flex flex-col items-center">
-        <p className={`${styles.p} text-red-500 font-semibold mb-1`}>
+        <p className={`${styles.p} text-red-500 font-semibold mb-1 text-center`}>
           Siz ro'yxatdan o'tish tugmasini bosgan zahoti passport
           ma'lumotlaringiz bilan ishlashimiz uchun ruxsat bergan bo'lasiz
         </p>

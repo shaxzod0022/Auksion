@@ -13,6 +13,7 @@ const lotService = {
     if (params.page) query.append("page", params.page);
     if (params.limit) query.append("limit", params.limit);
     if (params.category) query.append("category", params.category);
+    if (params.lotType) query.append("lotType", params.lotType);
     if (params.name) query.append("name", params.name);
     if (params.province) query.append("province", params.province);
     if (params.region) query.append("region", params.region);

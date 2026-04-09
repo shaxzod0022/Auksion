@@ -3,35 +3,35 @@
 import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams, useParams } from "next/navigation";
 import { Search, MapPin, Grid, RefreshCcw } from "lucide-react";
-import categoryService from "@/services/categoryService";
+import lotTypeService from "@/services/lotTypeService";
 import provinceService from "@/services/provinceService";
 import regionService from "@/services/regionService";
 
 export default function LotSearchBar({ onSearch, onClear, className }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const params = useParams(); // To check if we are in a category page
+  const params = useParams(); // To check if we are in a page with params
 
-  const [categories, setCategories] = useState([]);
+  const [lotTypes, setLotTypes] = useState([]);
   const [provinces, setProvinces] = useState([]);
   const [regions, setRegions] = useState([]);
 
   const [formData, setFormData] = useState({
     name: searchParams.get("name") || "",
-    category: searchParams.get("category") || params.slug || "",
+    lotType: searchParams.get("lotType") || "",
     province: searchParams.get("province") || "",
     region: searchParams.get("region") || "",
   });
 
   useEffect(() => {
-    // Fetch categories and provinces once
+    // Fetch lotTypes and provinces once
     const fetchData = async () => {
       try {
-        const [cats, provs] = await Promise.all([
-          categoryService.getAllCategories(),
+        const [types, provs] = await Promise.all([
+          lotTypeService.getAllLotTypes(),
           provinceService.getAllProvinces(),
         ]);
-        setCategories(cats);
+        setLotTypes(types);
         setProvinces(provs);
       } catch (err) {
         console.error("Error fetching search data:", err);
@@ -45,7 +45,9 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
     const fetchRegions = async () => {
       if (formData.province) {
         try {
-          const regs = await regionService.getRegionsByProvince(formData.province);
+          const regs = await regionService.getRegionsByProvince(
+            formData.province,
+          );
           setRegions(regs);
         } catch (err) {
           console.error("Error fetching regions:", err);
@@ -64,7 +66,7 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
 
   const handleSearch = (e) => {
     e.preventDefault();
-    
+
     if (onSearch) {
       onSearch(formData);
       return;
@@ -72,7 +74,7 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
 
     const query = new URLSearchParams();
     if (formData.name) query.set("name", formData.name);
-    if (formData.category) query.set("category", formData.category);
+    if (formData.lotType) query.set("lotType", formData.lotType);
     if (formData.province) query.set("province", formData.province);
     if (formData.region) query.set("region", formData.region);
 
@@ -82,29 +84,41 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
   const handleClear = () => {
     const emptyState = {
       name: "",
-      category: "",
+      lotType: "",
       province: "",
       region: "",
     };
     setFormData(emptyState);
-    
+
     if (onClear) {
       onClear();
       return;
     }
-    
+
     router.push("/lots/lots");
   };
 
   return (
-    <div className={className || "w-full bg-white/80 backdrop-blur-md rounded-2xl shadow-xl border border-gray-100 p-6 mb-12"}>
-      <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        
+    <div
+      className={
+        className ||
+        "w-full bg-white/80 backdrop-blur-md rounded-sm shadow-sm border border-gray-100 p-5"
+      }
+    >
+      <form
+        onSubmit={handleSearch}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4"
+      >
         {/* Keyword Search */}
         <div className="relative">
-          <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Lot nomi</label>
+          <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">
+            Lot nomi
+          </label>
           <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={18}
+            />
             <input
               type="text"
               name="name"
@@ -116,20 +130,27 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
           </div>
         </div>
 
-        {/* Category Select */}
+        {/* Lot Type Select */}
         <div>
-          <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Kategoriya</label>
+          <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">
+            Lot turi
+          </label>
           <div className="relative">
-            <Grid className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <Grid
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={18}
+            />
             <select
-              name="category"
+              name="lotType"
               className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-sm appearance-none cursor-pointer"
-              value={formData.category}
+              value={formData.lotType}
               onChange={handleChange}
             >
               <option value="">Barchasi</option>
-              {categories.map((cat) => (
-                <option key={cat._id} value={cat._id}>{cat.name}</option>
+              {lotTypes.map((type) => (
+                <option key={type._id} value={type._id}>
+                  {type.name}
+                </option>
               ))}
             </select>
           </div>
@@ -137,9 +158,14 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
 
         {/* Province Select */}
         <div>
-          <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Viloyat</label>
+          <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">
+            Viloyat
+          </label>
           <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <MapPin
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={18}
+            />
             <select
               name="province"
               className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-sm appearance-none cursor-pointer"
@@ -148,7 +174,9 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
             >
               <option value="">Barcha hududlar</option>
               {provinces.map((prov) => (
-                <option key={prov._id} value={prov._id}>{prov.name}</option>
+                <option key={prov._id} value={prov._id}>
+                  {prov.name}
+                </option>
               ))}
             </select>
           </div>
@@ -156,9 +184,14 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
 
         {/* Region Select */}
         <div>
-          <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">Tuman</label>
+          <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">
+            Tuman
+          </label>
           <div className="relative">
-            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <MapPin
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={18}
+            />
             <select
               name="region"
               className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-sm appearance-none cursor-pointer disabled:opacity-50"
@@ -168,7 +201,9 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
             >
               <option value="">Barcha tumanlar</option>
               {regions.map((reg) => (
-                <option key={reg._id} value={reg._id}>{reg.name}</option>
+                <option key={reg._id} value={reg._id}>
+                  {reg.name}
+                </option>
               ))}
             </select>
           </div>
@@ -178,7 +213,7 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
         <div className="flex items-end gap-2">
           <button
             type="submit"
-            className="flex-1 bg-[#18436E] border-none hover:bg-blue-800 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-blue-900/10 transition-all flex items-center justify-center gap-2 cursor-pointer"
+            className="flex-1 bg-[#18436E] border-none text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-blue-900/10 transition-all flex items-center justify-center gap-1 cursor-pointer"
           >
             <Search size={18} />
             Qidirish
@@ -192,7 +227,6 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
             <RefreshCcw size={20} />
           </button>
         </div>
-
       </form>
     </div>
   );

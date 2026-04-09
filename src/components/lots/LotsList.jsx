@@ -93,7 +93,7 @@ export default function LotsList({ data = [], pagination = {} }) {
 
   if (!data || data.length === 0) {
     return (
-      <div className={`${styles.paddingCont} flex flex-col items-center justify-center py-20 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 mt-10`}>
+      <div className={`${styles.paddingCont} flex flex-col items-center justify-center bg-gray-50 rounded-xl border-2 border-dashed border-gray-200`}>
         <div className="text-gray-400 mb-4 text-6xl">📦</div>
         <h3 className="text-xl font-bold text-gray-600 mb-2">Hozircha lotlar mavjud emas</h3>
         <p className="text-gray-400 text-center max-w-md">
@@ -106,8 +106,8 @@ export default function LotsList({ data = [], pagination = {} }) {
   const { totalPages, currentPage } = pagination;
 
   return (
-    <div className={`${styles.paddingCont} pb-20`}>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mt-10 mb-10">
+    <div className={`${styles.paddingCont} !py-5`}>
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {data.map((item) => (
           <Link
             href={`/lots/${item.slug}`}

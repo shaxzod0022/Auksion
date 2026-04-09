@@ -62,7 +62,11 @@ export default async function CategoryLotsPage({ params, searchParams }) {
       <LotHero title={category?.name} image={category?.image} />
 
       <div className="max-w-[1900px] mx-auto 2xl:px-32 xl:px-28 lg:px-16 md:px-10 sm:px-8 px-4 -mt-10 relative z-10">
-        <Suspense fallback={<div className="h-24 bg-white/50 animate-pulse rounded-2xl" />}>
+        <Suspense
+          fallback={
+            <div className="h-24 bg-white/50 animate-pulse rounded-2xl" />
+          }
+        >
           <LotSearchBar />
         </Suspense>
       </div>
@@ -77,8 +81,17 @@ export default async function CategoryLotsPage({ params, searchParams }) {
         </Link>
       </div>
 
-      <Suspense fallback={<div className="p-20 text-center text-gray-400 animate-pulse">Yuklanmoqda...</div>}>
-        <LotsList data={lotsResponse.data} pagination={lotsResponse.pagination} />
+      <Suspense
+        fallback={
+          <div className="p-20 text-center text-gray-400 animate-pulse">
+            Yuklanmoqda...
+          </div>
+        }
+      >
+        <LotsList
+          data={lotsResponse.data}
+          pagination={lotsResponse.pagination}
+        />
       </Suspense>
       <AboutUs />
     </main>

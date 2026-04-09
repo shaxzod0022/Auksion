@@ -81,7 +81,7 @@ export default function Lots({ initialData = [] }) {
   return (
     <div className={`${styles.paddingCont} ${styles.flexCenter} flex-col`}>
       <div
-        className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10`}
+        className={`w-full grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-10`}
       >
         {initialData.map((item) => (
           <Link

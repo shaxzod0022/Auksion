@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Calendar, Eye, Clock, ChevronRight } from "lucide-react";
+import { styles } from "@/styles/styles";
 
 export default function NewsContent({ data }) {
   const [mounted, setMounted] = useState(false);
@@ -21,29 +22,7 @@ export default function NewsContent({ data }) {
   };
   return (
     <div className="bg-white min-h-screen pb-20">
-      {/* Breadcrumbs */}
-      <div className="bg-gray-50 border-b border-gray-100 py-4 mb-8">
-        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <nav className="flex items-center gap-2 text-sm text-gray-500">
-            <Link href="/" className="hover:text-blue-600 transition-colors">
-              Bosh sahifa
-            </Link>
-            <ChevronRight size={14} />
-            <Link
-              href="/news"
-              className="hover:text-blue-600 transition-colors"
-            >
-              Yangiliklar
-            </Link>
-            <ChevronRight size={14} />
-            <span className="text-gray-900 font-medium truncate max-w-[200px] md:max-w-md">
-              {data.name}
-            </span>
-          </nav>
-        </div>
-      </div>
-
-      <article className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+      <article className={`${styles.paddingCont}`}>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Main Content */}
           <div className="lg:col-span-8">
@@ -63,10 +42,6 @@ export default function NewsContent({ data }) {
                   <Eye size={18} className="text-blue-600" />
                   <span>{data.views || 0} marta ko'rildi</span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Clock size={18} className="text-blue-600" />
-                  <span>5 daqiqa o'qish</span>
-                </div>
               </div>
             </header>
 
@@ -75,7 +50,7 @@ export default function NewsContent({ data }) {
               <img
                 src={`https://auksion-backend-production.up.railway.app/upload/${data.image}`}
                 alt={data.name}
-                className="object-cover group-hover:scale-105 transition-transform duration-700"
+                className="object-cover group-hover:scale-105 transition-transform duration-700 w-full h-full"
               />
               <div className="absolute inset-0 bg-linear-to-t from-black/20 to-transparent"></div>
             </div>

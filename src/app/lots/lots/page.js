@@ -1,5 +1,6 @@
 import { AboutUs, LotHero, LotsList } from "@/components";
 import LotSearchBar from "@/components/lots/LotSearchBar";
+import { styles } from "@/styles/styles";
 import { Suspense } from "react";
 
 export const metadata = {
@@ -12,7 +13,7 @@ export default async function AllLotsPage({ searchParams }) {
   const {
     page = 1,
     name = "",
-    category = "",
+    lotType = "",
     province = "",
     region = "",
   } = await searchParams;
@@ -23,7 +24,7 @@ export default async function AllLotsPage({ searchParams }) {
         page,
         limit: 12,
         name,
-        category,
+        lotType,
         province,
         region,
       });
@@ -46,13 +47,24 @@ export default async function AllLotsPage({ searchParams }) {
   return (
     <main className="bg-gray-200 min-h-screen">
       <LotHero title="Barcha Lotlar" />
-      <div className="max-w-[1900px] mx-auto 2xl:px-32 xl:px-28 lg:px-16 md:px-10 sm:px-8 px-4 -mt-10 relative z-10">
-        <Suspense fallback={<div className="h-24 bg-white/50 animate-pulse rounded-2xl" />}>
+      <div className={`${styles.paddingCont}`}>
+        <Suspense
+          fallback={<div className="bg-white/50 animate-pulse rounded-sm" />}
+        >
           <LotSearchBar />
         </Suspense>
       </div>
-      <Suspense fallback={<div className="p-20 text-center text-gray-400 animate-pulse">Yuklanmoqda...</div>}>
-        <LotsList data={lotsResponse.data} pagination={lotsResponse.pagination} />
+      <Suspense
+        fallback={
+          <div className="p-20 text-center text-gray-400 animate-pulse">
+            Yuklanmoqda...
+          </div>
+        }
+      >
+        <LotsList
+          data={lotsResponse.data}
+          pagination={lotsResponse.pagination}
+        />
       </Suspense>
       <AboutUs />
     </main>
