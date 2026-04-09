@@ -3,6 +3,7 @@ import LotSearchBar from "@/components/lots/LotSearchBar";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { Suspense } from "react";
+import { styles } from "@/styles/styles";
 
 export default async function CategoryLotsPage({ params, searchParams }) {
   const { slug } = await params;
@@ -61,20 +62,18 @@ export default async function CategoryLotsPage({ params, searchParams }) {
     <main className="bg-gray-200 min-h-screen">
       <LotHero title={category?.name} image={category?.image} />
 
-      <div className="max-w-[1900px] mx-auto 2xl:px-32 xl:px-28 lg:px-16 md:px-10 sm:px-8 px-4 -mt-10 relative z-10">
+      <div className={`${styles.paddingCont} relative z-10`}>
         <Suspense
-          fallback={
-            <div className="h-24 bg-white/50 animate-pulse rounded-2xl" />
-          }
+          fallback={<div className="bg-white/50 animate-pulse rounded-sm" />}
         >
           <LotSearchBar />
         </Suspense>
       </div>
 
-      <div className="max-w-[1900px] mx-auto 2xl:px-32 xl:px-28 lg:px-16 md:px-10 sm:px-8 px-4 mt-10">
+      <div className={`${styles.paddingCont} !pb-5 !pt-0`}>
         <Link
           href="/lots"
-          className="inline-flex items-center gap-2 text-[#18436E] font-bold hover:underline mb-5 group"
+          className="inline-flex items-center gap-2 text-[#18436E] font-bold hover:underline group"
         >
           <ChevronLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           Barcha kategoriyalar
