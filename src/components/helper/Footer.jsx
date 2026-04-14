@@ -55,11 +55,9 @@ export default function Footer() {
         <div className="flex flex-col gap-5">
           <div className={`${styles.flexCol} gap-3`}>
             <Link href="/">
-              <Image
+              <img
                 src="/icon.png"
                 alt="Universal Auksion Invest Logotip"
-                width={100}
-                height={100}
                 className="md:w-24 md:h-24 w-16 h-16"
               />
             </Link>

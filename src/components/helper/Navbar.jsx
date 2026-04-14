@@ -1,6 +1,6 @@
 "use client";
 import { styles } from "@/styles/styles";
-import { ChevronDown, FileCheck, FileX, LayoutList, Menu } from "lucide-react";
+import { ChevronDown, Menu } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -10,7 +10,9 @@ import SideBar from "./SideBar";
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [subMenu, setSubMenu] = useState(false);
-  const { isLoggedIn, isAdmin, isInitialized } = useSelector((state) => state.auth);
+  const { isLoggedIn, isAdmin, isInitialized } = useSelector(
+    (state) => state.auth,
+  );
   return (
     <nav className={`w-full bg-white relative`}>
       <SideBar open={open} setOpen={setOpen} />
@@ -42,7 +44,13 @@ export default function Navbar() {
                   src="/ico-1.png"
                   alt="Shaxsiy kabinet"
                 />
-                <span>{isAdmin ? "Admin Panel" : isLoggedIn ? "Profil" : "Shaxsiy kabinet"}</span>
+                <span>
+                  {isAdmin
+                    ? "Admin Panel"
+                    : isLoggedIn
+                      ? "Profil"
+                      : "Shaxsiy kabinet"}
+                </span>
               </Link>
             </>
           )}
@@ -62,11 +70,9 @@ export default function Navbar() {
       >
         <div className={`${styles.flexStart} gap-3`}>
           <Link href="/">
-            <Image
+            <img
               src="/icon.png"
               alt="Universal Auksion Invest Logotip"
-              width={100}
-              height={100}
               className="md:w-24 md:h-24 w-16 h-16"
             />
           </Link>
@@ -231,7 +237,13 @@ export default function Navbar() {
                   src="/ico-1.png"
                   alt="Shaxsiy kabinet"
                 />
-                <span>{isAdmin ? "Admin Panel" : isLoggedIn ? "Profil" : "Shaxsiy kabinet"}</span>
+                <span>
+                  {isAdmin
+                    ? "Admin Panel"
+                    : isLoggedIn
+                      ? "Profil"
+                      : "Shaxsiy kabinet"}
+                </span>
               </Link>
             </>
           )}
