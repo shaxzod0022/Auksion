@@ -1,5 +1,4 @@
-const API_URL =
-  "https://considerate-integrity-production.up.railway.app/api/category";
+const API_URL = "http://localhost:8080/api/category";
 
 const getAuthHeaders = () => {
   const token = sessionStorage.getItem("adminToken");

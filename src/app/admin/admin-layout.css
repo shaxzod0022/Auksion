@@ -3,9 +3,9 @@
   --admin-bg-secondary: #ffffff;
   --admin-sidebar: #ffffff;
   --admin-sidebar-text: #64748b;
-  --admin-sidebar-active: #3b82f6;
-  --admin-accent: #3b82f6;
-  --admin-accent-hover: #2563eb;
+  --admin-sidebar-active: #18436E;
+  --admin-accent: #18436E;
+  --admin-accent-hover: #18436E;
   --admin-border: #e2e8f0;
   --admin-text: #0f172a;
   --admin-text-muted: #64748b;
@@ -126,7 +126,40 @@
 .admin-input:focus {
   outline: none;
   border-color: var(--admin-accent);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  box-shadow: 0 0 0 3px rgba(24, 67, 110, 0.1);
+}
+
+/* Phone Input Integration */
+.admin-phone-input {
+  width: 100% !important;
+  margin-bottom: 1rem;
+  --react-international-phone-border-radius: 0.5rem;
+  --react-international-phone-border-color: var(--admin-border);
+  --react-international-phone-background-color: var(--admin-bg-secondary);
+  --react-international-phone-text-color: var(--admin-text);
+  --react-international-phone-height: auto;
+}
+
+.admin-phone-input .react-international-phone-input {
+  width: 100% !important;
+  height: 45px !important;
+  font-size: 0.9375rem !important;
+  font-family: inherit !important;
+  border-radius: 0 0.5rem 0.5rem 0 !important;
+  border-left: none !important;
+  padding: 0.75rem 1rem !important;
+}
+
+.admin-phone-input .react-international-phone-country-selector-button {
+  height: 45px !important;
+  border-radius: 0.5rem 0 0 0.5rem !important;
+  background: #f8fafc !important;
+  padding: 0 0.75rem !important;
+}
+
+.admin-phone-input .react-international-phone-input:focus {
+  border-color: var(--admin-accent) !important;
+  z-index: 10;
 }
 
 .admin-btn {

@@ -1,5 +1,4 @@
-const API_URL =
-  "https://considerate-integrity-production.up.railway.app/api/application";
+const API_URL = "http://localhost:8080/api/application";
 
 const getAuthHeaders = () => {
   const token =

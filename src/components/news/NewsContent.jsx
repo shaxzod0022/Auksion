@@ -48,7 +48,7 @@ export default function NewsContent({ data }) {
             {/* Featured Image */}
             <div className="relative aspect-video w-full rounded-2xl overflow-hidden shadow-2xl mb-10 group">
               <img
-                src={`https://considerate-integrity-production.up.railway.app/upload/${data.image}`}
+                src={`http://localhost:8080/upload/${data.image}`}
                 alt={data.name}
                 className="object-cover group-hover:scale-105 transition-transform duration-700 w-full h-full"
               />

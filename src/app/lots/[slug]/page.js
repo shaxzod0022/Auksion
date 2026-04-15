@@ -5,9 +5,7 @@ import { ChevronLeft } from "lucide-react";
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   try {
-    const res = await fetch(
-      `https://considerate-integrity-production.up.railway.app/api/lot/slug/${slug}`,
-    );
+    const res = await fetch(`http://localhost:8080/api/lot/slug/${slug}`);
     const lot = await res.json();
 
     return {
@@ -24,12 +22,9 @@ export default async function LotDetailPage({ params }) {
 
   const fetchLotData = async () => {
     try {
-      const res = await fetch(
-        `https://considerate-integrity-production.up.railway.app/api/lot/slug/${slug}`,
-        {
-          next: { revalidate: 60 },
-        },
-      );
+      const res = await fetch(`http://localhost:8080/api/lot/slug/${slug}`, {
+        next: { revalidate: 60 },
+      });
       if (!res.ok) return null;
       return res.json();
     } catch (error) {

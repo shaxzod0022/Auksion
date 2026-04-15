@@ -17,14 +17,18 @@ export const AdminAuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
+      console.log("AdminAuthContext: Auth check started...");
       const token = sessionStorage.getItem("adminToken");
       if (token) {
+        console.log("AdminAuthContext: Token found, verifying...");
         try {
           const verifyResult = await verifyToken();
+          console.log("AdminAuthContext: Verification result:", verifyResult);
           if (verifyResult.isValid) {
             setAdmin(verifyResult.user);
             dispatch(loginAdmin());
           } else {
+            console.log("AdminAuthContext: Invalid token, cleaning up...");
             sessionStorage.removeItem("adminToken");
             setAdmin(null);
             dispatch(logoutAction());
@@ -35,8 +39,11 @@ export const AdminAuthProvider = ({ children }) => {
           setAdmin(null);
           dispatch(logoutAction());
         }
+      } else {
+        console.log("AdminAuthContext: No token found.");
       }
       setLoading(false);
+      console.log("AdminAuthContext: Auth check finished, loading: false.");
     };
 
     checkAuth();

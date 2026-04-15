@@ -13,7 +13,7 @@ import "swiper/css/pagination";
 import { useEffect, useState } from "react";
 import newsService from "@/services/newsService";
 
-const API_BASE_URL = "https://considerate-integrity-production.up.railway.app";
+const API_BASE_URL = "http://localhost:8080";
 
 
 export default function News({ initialData = [] }) {

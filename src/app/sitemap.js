@@ -1,5 +1,5 @@
 export default function sitemap() {
-  const baseUrl = "https://uainf-auksion.uz";
+  const baseUrl = "https://www.uainf-auksion.uz";
 
   return [
     {

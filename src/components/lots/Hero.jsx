@@ -1,6 +1,6 @@
 import { styles } from "@/styles/styles";
 
-const API_BASE_URL = "https://considerate-integrity-production.up.railway.app";
+const API_BASE_URL = "http://localhost:8080";
 
 export default function Hero({ title = "Lotlar", image = "/lot_hero.jpg" }) {
   const imageUrl = image.startsWith("http")

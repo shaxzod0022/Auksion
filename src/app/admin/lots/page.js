@@ -28,6 +28,8 @@ import {
   Gavel,
   Trophy,
 } from "lucide-react";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 import LotSearchBar from "@/components/lots/LotSearchBar";
 import protocolService from "@/services/protocolService";
 
@@ -60,7 +62,6 @@ export default function LotsPage() {
     startPrice: "",
     startDate: "",
     endDate: "",
-    location: "",
     salesVolume: "",
     description: "",
     province: "",
@@ -73,6 +74,7 @@ export default function LotsPage() {
     formTrade: "",
     firstStep: "",
     consultationPrice: "",
+    consultingPrice: "",
     status: "active",
   });
   const [selectedImage, setSelectedImage] = useState(null);
@@ -128,7 +130,6 @@ export default function LotsPage() {
         startPrice: lot.startPrice,
         startDate: new Date(lot.startDate).toISOString().slice(0, 16),
         endDate: new Date(lot.endDate).toISOString().slice(0, 16),
-        location: lot.location,
         salesVolume: lot.salesVolume,
         description: lot.description,
         province: lot.province,
@@ -141,11 +142,10 @@ export default function LotsPage() {
         formTrade: lot.formTrade,
         firstStep: lot.firstStep,
         consultationPrice: lot.consultationPrice,
+        consultingPrice: lot.consultingPrice || "",
         status: lot.status,
       });
-      setImagePreview(
-        `https://considerate-integrity-production.up.railway.app/upload/${lot.image}`,
-      );
+      setImagePreview(`http://localhost:8080/upload/${lot.image}`);
       setSelectedImage(null);
 
       if (lot.province?._id || lot.province) {
@@ -161,7 +161,6 @@ export default function LotsPage() {
         startPrice: "",
         startDate: "",
         endDate: "",
-        location: "",
         salesVolume: "",
         description: "",
         province: "",
@@ -174,6 +173,7 @@ export default function LotsPage() {
         formTrade: "",
         firstStep: "",
         consultationPrice: "",
+        consultingPrice: "",
         status: "active",
       });
       setImagePreview(null);
@@ -281,7 +281,7 @@ export default function LotsPage() {
     try {
       const token = sessionStorage.getItem("adminToken");
       const res = await fetch(
-        `https://considerate-integrity-production.up.railway.app/api/application/lot/${lot._id}`,
+        `http://localhost:8080/api/application/lot/${lot._id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -299,7 +299,7 @@ export default function LotsPage() {
     try {
       const token = sessionStorage.getItem("adminToken");
       const res = await fetch(
-        `https://considerate-integrity-production.up.railway.app/api/application/${appId}/status`,
+        `http://localhost:8080/api/application/${appId}/status`,
         {
           method: "PUT",
           headers: {
@@ -331,7 +331,7 @@ export default function LotsPage() {
     try {
       const token = sessionStorage.getItem("adminToken");
       const res = await fetch(
-        `https://considerate-integrity-production.up.railway.app/api/application/${appId}`,
+        `http://localhost:8080/api/application/${appId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -445,7 +445,7 @@ export default function LotsPage() {
                       }}
                     >
                       <img
-                        src={`https://considerate-integrity-production.up.railway.app/upload/${lot.image}`}
+                        src={`http://localhost:8080/upload/${lot.image}`}
                         alt={lot.name}
                         style={{
                           width: "100%",
@@ -555,9 +555,16 @@ export default function LotsPage() {
                         className="admin-nav-item"
                         style={{
                           padding: "0.5rem",
-                          color: "#8b5cf6",
+                          color: (lot.status !== "active" || new Date(lot.endDate) < new Date()) ? "#9ca3af" : "#8b5cf6",
+                          cursor: (lot.status !== "active" || new Date(lot.endDate) < new Date()) ? "not-allowed" : "pointer",
+                          opacity: (lot.status !== "active" || new Date(lot.endDate) < new Date()) ? 0.5 : 1,
                         }}
-                        title="Auksion xonasiga kirish"
+                        title={
+                          lot.status !== "active" ? "Auksion yakunlangan" :
+                          new Date(lot.endDate) < new Date() ? "Vaqti o'tib ketgan" :
+                          "Auksion xonasiga kirish"
+                        }
+                        disabled={lot.status !== "active" || new Date(lot.endDate) < new Date()}
                       >
                         <Gavel size={18} />
                       </button>
@@ -671,6 +678,7 @@ export default function LotsPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, name: e.target.value })
                         }
+                        placeholder="Misol: Malibu mashinasi, qora rangli, 2022 yil"
                       />
                     </div>
                     {editingLot && (
@@ -763,10 +771,11 @@ export default function LotsPage() {
                               startPrice: e.target.value,
                             })
                           }
+                          placeholder="Misol: 50000000"
                         />
                       </div>
                       <div>
-                        <label className="admin-label">Qadam miqdori</label>
+                        <label className="admin-label">Qadam miqdori (%)</label>
                         <input
                           type="number"
                           className="admin-input"
@@ -778,6 +787,7 @@ export default function LotsPage() {
                               firstStep: e.target.value,
                             })
                           }
+                          placeholder="Misol: 1"
                         />
                       </div>
                       <div>
@@ -793,6 +803,23 @@ export default function LotsPage() {
                               consultationPrice: e.target.value,
                             })
                           }
+                          placeholder="Misol: 5"
+                        />
+                      </div>
+                      <div>
+                        <label className="admin-label">Konsalting xizmati narxi</label>
+                        <input
+                          type="number"
+                          className="admin-input"
+                          required
+                          value={formData.consultingPrice}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              consultingPrice: e.target.value,
+                            })
+                          }
+                          placeholder="Misol: 100000"
                         />
                       </div>
                     </div>
@@ -913,25 +940,11 @@ export default function LotsPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, address: e.target.value })
                         }
+                        placeholder="Misol: Shayxontohur tumani, 15-uy"
                       />
                     </div>
                   </div>
-                  <div style={{ marginTop: "1rem" }}>
-                    <label className="admin-label">
-                      Google Xarita Lokatsiyasi (URL)
-                    </label>
-                    <input
-                      className="admin-input"
-                      required
-                      value={formData.location}
-                      onChange={(e) =>
-                        setFormData({ ...formData, location: e.target.value })
-                      }
-                      placeholder="https://..."
-                    />
-                  </div>
                 </div>
-
                 {/* SECTION 4: BOG'LANISH VA BOSHQA */}
                 <div style={{ marginBottom: "2rem" }}>
                   <div
@@ -956,23 +969,24 @@ export default function LotsPage() {
                   >
                     <div>
                       <label className="admin-label">Telefon 1</label>
-                      <input
-                        className="admin-input"
-                        required
+                      <PhoneInput
+                        defaultCountry="uz"
                         value={formData.phone1}
-                        onChange={(e) =>
-                          setFormData({ ...formData, phone1: e.target.value })
-                        }
+                        onChange={(phone) => setFormData({ ...formData, phone1: phone })}
+                        className="admin-phone-input"
+                        inputClassName="admin-input"
+                        style={{ width: "100%" }}
                       />
                     </div>
                     <div>
                       <label className="admin-label">Telefon 2</label>
-                      <input
-                        className="admin-input"
+                      <PhoneInput
+                        defaultCountry="uz"
                         value={formData.phone2}
-                        onChange={(e) =>
-                          setFormData({ ...formData, phone2: e.target.value })
-                        }
+                        onChange={(phone) => setFormData({ ...formData, phone2: phone })}
+                        className="admin-phone-input"
+                        inputClassName="admin-input"
+                        style={{ width: "100%" }}
                       />
                     </div>
                     <div>
@@ -984,6 +998,7 @@ export default function LotsPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, customer: e.target.value })
                         }
+                        placeholder="Misol: Toshkent shahar hokimiyati"
                       />
                     </div>
                     <div>
@@ -998,6 +1013,7 @@ export default function LotsPage() {
                             formTrade: e.target.value,
                           })
                         }
+                        placeholder="Misol: Ochiq yoki yopiq"
                       />
                     </div>
                     <div>
@@ -1024,6 +1040,7 @@ export default function LotsPage() {
                         onChange={(e) =>
                           setFormData({ ...formData, style: e.target.value })
                         }
+                        placeholder="Misol: Narx oshib borish tartibida"
                       />
                     </div>
                   </div>
@@ -1268,7 +1285,7 @@ export default function LotsPage() {
                     }}
                   >
                     <img
-                      src={`https://considerate-integrity-production.up.railway.app/upload/${previewLot.image}`}
+                      src={`http://localhost:8080/upload/${previewLot.image}`}
                       alt={previewLot.name}
                       style={{
                         width: "100%",
@@ -1380,7 +1397,7 @@ export default function LotsPage() {
                           color: "var(--admin-accent)",
                         }}
                       >
-                        {previewLot.firstStep?.toLocaleString()} UZS
+                        {previewLot.firstStep?.toLocaleString()} %
                       </p>
                     </div>
                   </div>

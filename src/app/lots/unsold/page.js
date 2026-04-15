@@ -31,7 +31,7 @@ export default async function UnsoldLotsPage({ searchParams }) {
       });
 
       const res = await fetch(
-        `https://considerate-integrity-production.up.railway.app/api/lot?${query.toString()}`,
+        `http://localhost:8080/api/lot?${query.toString()}`,
         {
           next: { revalidate: 60 },
         },

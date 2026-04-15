@@ -124,7 +124,7 @@ export default function LotDetailClient({ lot }) {
       <div className="flex-1 space-y-4">
         <div className="bg-white p-3 rounded-sm shadow-xl shadow-blue-900/5 overflow-hidden">
           <img
-            src={`https://considerate-integrity-production.up.railway.app/upload/${lot.image}`}
+            src={`http://localhost:8080/upload/${lot.image}`}
             alt={lot.name}
             className="w-full h-auto aspect-video object-cover rounded-sm"
           />
@@ -246,18 +246,26 @@ export default function LotDetailClient({ lot }) {
             <div className="space-y-4">
               <div className="flex justify-between items-center text-sm">
                 <span className="text-gray-400 font-bold uppercase tracking-wider">
-                  Auksion qadami
+                  Zaklad puli
                 </span>
-                <span className="text-[#18436E] font-black">
-                  {lot.firstStep?.toLocaleString()} so'm
+                <span className="text-[#18436E] font-black text-right">
+                  {lot.consultationPrice}% ({((lot.startPrice * lot.consultationPrice) / 100)?.toLocaleString()} so'm)
                 </span>
               </div>
               <div className="flex justify-between items-center text-sm">
                 <span className="text-gray-400 font-bold uppercase tracking-wider">
-                  Xizmat narxi
+                  Auksion qadami
                 </span>
-                <span className="text-[#18436E] font-black">
-                  {lot.consultationPrice?.toLocaleString()} so'm
+                <span className="text-[#18436E] font-black text-right">
+                  {lot.firstStep}% ({((lot.startPrice * lot.firstStep) / 100)?.toLocaleString()} so'm)
+                </span>
+              </div>
+              <div className="flex justify-between items-center text-sm">
+                <span className="text-gray-400 font-bold uppercase tracking-wider">
+                  Konsalting xizmati
+                </span>
+                <span className="text-[#18436E] font-black text-right">
+                  {lot.consultingPrice?.toLocaleString()} so'm
                 </span>
               </div>
               <div className="flex justify-between items-center text-sm">
@@ -310,21 +318,21 @@ export default function LotDetailClient({ lot }) {
                 </div>
 
                  {/* Entry Button Logic */}
-                 {new Date(lot.endDate).getTime() < new Date().getTime() && (
-                   applicationStatus === "approved" && lot.status === "active" ? (
-                     <button
-                       onClick={() => router.push(`/auction/${lot.slug}`)}
-                       className="w-full bg-[#18436E] hover:bg-[#18436E]/90 text-white font-black py-4 rounded-sm shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center gap-3 active:scale-95 cursor-pointer"
-                     >
-                       AUKSIONGA KIRISH
-                     </button>
-                   ) : (
-                     <div className="w-full p-4 rounded-sm text-center font-bold flex flex-col gap-1 items-center justify-center border bg-gray-100 text-gray-500 border-gray-200">
-                       <span className="text-lg uppercase">
-                         {lot.status === 'active' ? "Auksion muddati tugadi" : "Auksion yakunlangan"}
-                       </span>
-                     </div>
-                   )
+                 {applicationStatus === "approved" && lot.status === "active" && new Date(lot.endDate).getTime() >= new Date().getTime() ? (
+                   <button
+                     onClick={() => router.push(`/auction/${lot.slug}`)}
+                     className="w-full bg-[#18436E] hover:bg-[#18436E]/90 text-white font-black py-4 rounded-sm shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center gap-3 active:scale-95 cursor-pointer"
+                   >
+                     AUKSIONGA KIRISH
+                   </button>
+                 ) : (
+                   <div className="w-full p-4 rounded-sm text-center font-bold flex flex-col gap-1 items-center justify-center border bg-gray-100 text-gray-500 border-gray-200">
+                     <span className="text-lg uppercase">
+                       {lot.status !== "active" ? "Auksion yakunlangan" : 
+                        new Date(lot.endDate).getTime() < new Date().getTime() ? "Auksion muddati tugadi" :
+                        applicationStatus === "rejected" ? "Arizangiz rad etildi" : "Arizangiz ko'rib chiqilmoqda"}
+                     </span>
+                   </div>
                  )}
               </div>
             ) : new Date(lot.endDate).getTime() < new Date().getTime() ? (

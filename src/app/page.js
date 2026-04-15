@@ -4,12 +4,9 @@ import { Suspense } from "react";
 export default async function Home() {
   const fetchLatestLots = async () => {
     try {
-      const res = await fetch(
-        "https://considerate-integrity-production.up.railway.app/api/lot/latest",
-        {
-          next: { revalidate: 60 },
-        },
-      );
+      const res = await fetch("http://localhost:8080/api/lot/latest", {
+        next: { revalidate: 60 },
+      });
       return res.json();
     } catch (error) {
       console.error("Error fetching latest lots:", error);
@@ -19,12 +16,9 @@ export default async function Home() {
 
   const fetchLatestNews = async () => {
     try {
-      const res = await fetch(
-        "https://considerate-integrity-production.up.railway.app/api/news/latest",
-        {
-          next: { revalidate: 60 },
-        },
-      );
+      const res = await fetch("http://localhost:8080/api/news/latest", {
+        next: { revalidate: 60 },
+      });
       return res.json();
     } catch (error) {
       console.error("Error fetching latest news:", error);

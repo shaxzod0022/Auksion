@@ -20,16 +20,25 @@ import { useEffect } from "react";
 
 function AdminLayoutContent({ children }) {
   const { admin, loading, logout } = useAdminAuth();
-  const pathname = usePathname();
+  const rawPathname = usePathname();
+  const pathname = rawPathname.replace(/\/$/, "") || "/";
   const router = useRouter();
 
   const isLoginPage = pathname === "/admin/login";
 
   useEffect(() => {
+    console.log("AdminLayout useEffect:", { 
+      rawPathname, 
+      normalizedPathname: pathname, 
+      loading, 
+      admin: !!admin, 
+      isLoginPage 
+    });
     if (!loading && !admin && !isLoginPage) {
-      router.push("/admin/login");
+      console.log("Redirecting to /admin/login...");
+      router.replace("/admin/login");
     }
-  }, [admin, loading, isLoginPage, router]);
+  }, [admin, loading, isLoginPage, router, rawPathname, pathname]);
 
   if (loading) {
     return (
@@ -47,7 +56,11 @@ function AdminLayoutContent({ children }) {
   }
 
   if (!admin) {
-    return null; // Redirecting in useEffect
+    return (
+      <div className="admin-container" style={{ justifyContent: "center", alignItems: "center", height: "100vh" }}>
+        <p>Login sahifasiga yo'naltirilmoqda...</p>
+      </div>
+    );
   }
 
   const navItems = [
@@ -84,7 +97,7 @@ function AdminLayoutContent({ children }) {
               <Link
                 key={item.path}
                 href={item.path}
-                className={`admin-nav-item ${pathname === item.path ? "active" : ""}`}
+                className={`admin-nav-item ${pathname === item.path.replace(/\/$/, "") ? "active" : ""}`}
               >
                 <Icon size={20} />
                 <span>{item.name}</span>
