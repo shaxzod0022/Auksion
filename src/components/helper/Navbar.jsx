@@ -1,7 +1,6 @@
 "use client";
 import { styles } from "@/styles/styles";
 import { ChevronDown, Menu } from "lucide-react";
-import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
@@ -197,17 +196,6 @@ export default function Navbar() {
           </Link>
           <div className="w-full h-[4px] bg-[#18436E] transform scale-x-0 group-hover:scale-x-100 origin-left mt-2"></div>
         </li>
-        {isLoggedIn && !isAdmin && (
-          <li className={`group`}>
-            <Link
-              className={`${styles.p} hover:text-[#18436E] transition`}
-              href="/protocols"
-            >
-              Bayonnomalarim
-            </Link>
-            <div className="w-full h-[4px] bg-[#18436E] transform scale-x-0 group-hover:scale-x-100 origin-left mt-2"></div>
-          </li>
-        )}
       </ul>
       <div className={`bg-[#18436E] sm:hidden block w-full`}>
         <div

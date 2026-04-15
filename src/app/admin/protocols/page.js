@@ -15,9 +15,12 @@ export default function AdminProtocols() {
   const fetchProtocols = async () => {
     try {
       const token = sessionStorage.getItem("adminToken");
-      const res = await fetch("http://localhost:8080/api/protocol", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await fetch(
+        "https://considerate-integrity-production.up.railway.app/api/protocol",
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       const data = await res.json();
       if (Array.isArray(data)) {
         setProtocols(data);
@@ -35,14 +38,17 @@ export default function AdminProtocols() {
     try {
       const token = sessionStorage.getItem("adminToken");
       const newStatus = currentStatus === "active" ? "inactive" : "active";
-      const res = await fetch(`http://localhost:8080/api/protocol/${id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const res = await fetch(
+        `https://considerate-integrity-production.up.railway.app/api/protocol/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ status: newStatus }),
         },
-        body: JSON.stringify({ status: newStatus }),
-      });
+      );
       if (res.ok) {
         fetchProtocols();
       }
@@ -141,7 +147,7 @@ export default function AdminProtocols() {
                       }}
                     >
                       <a
-                        href={`http://localhost:8080/api/protocol/${p._id}/download`}
+                        href={`https://considerate-integrity-production.up.railway.app/api/protocol/${p._id}/download`}
                         target="_blank"
                         rel="noreferrer"
                         className="admin-nav-item"

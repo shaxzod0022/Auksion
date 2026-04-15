@@ -38,11 +38,11 @@ export default function AuctionRoom({ params }) {
   const [protocolId, setProtocolId] = useState(null);
   const [error, setError] = useState("");
 
-  const scrollRef = useRef(null);
+  const bidsEndRef = useRef(null);
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    if (bidsEndRef.current) {
+      bidsEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [bids]);
 
@@ -71,7 +71,7 @@ export default function AuctionRoom({ params }) {
         const adminToken = sessionStorage.getItem("adminToken");
         const userToken = sessionStorage.getItem("userToken");
         const userData = JSON.parse(sessionStorage.getItem("userData") || "{}");
-        
+
         const token = adminToken || userToken;
         if (!token) {
           router.push("/login");
@@ -96,14 +96,18 @@ export default function AuctionRoom({ params }) {
         }
 
         // Initialize Socket
-        const socketInstance = io("http://localhost:8080");
+        const socketInstance = io(
+          "https://considerate-integrity-production.up.railway.app",
+        );
         setSocket(socketInstance);
 
-        socketInstance.emit("join_auction", { 
-          slug, 
-          isAdmin: isAdm, 
+        socketInstance.emit("join_auction", {
+          slug,
+          isAdmin: isAdm,
           userId: userData._id,
-          userName: isAdm ? "Admin" : `${userData.lastName} ${userData.firstName}`
+          userName: isAdm
+            ? "Admin"
+            : `${userData.lastName} ${userData.firstName}`,
         });
 
         socketInstance.on("auction_state", (state) => {
@@ -159,7 +163,7 @@ export default function AuctionRoom({ params }) {
   const handlePlaceBid = () => {
     if (phase !== "bidding" || !socket || isAdmin) return;
     const userData = JSON.parse(sessionStorage.getItem("userData") || "{}");
-    
+
     socket.emit("place_bid", {
       slug,
       userId: userData._id,
@@ -277,6 +281,14 @@ export default function AuctionRoom({ params }) {
                 </span>
               </div>
             )}
+            {phase === "finished_waiting" && (
+              <div className="bg-yellow-600 px-4 py-2 rounded-sm flex items-center gap-2">
+                <Clock size={16} />
+                <span className="text-xs font-black uppercase">
+                  Natija kutilmoqda...
+                </span>
+              </div>
+            )}
             {phase === "ended" && (
               <div className="bg-red-600 px-4 py-2 rounded-sm">
                 <span className="text-xs font-black uppercase">
@@ -326,10 +338,7 @@ export default function AuctionRoom({ params }) {
               </div>
             </div>
 
-            <div
-              ref={scrollRef}
-              className="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50/20"
-            >
+            <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50/20 h-[400px] lg:h-auto">
               {bids.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-gray-300">
                   <MessageSquare size={48} className="mb-2 opacity-20" />
@@ -343,11 +352,11 @@ export default function AuctionRoom({ params }) {
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold border border-blue-200">
-                        {isAdmin ? bid.userName?.[0] : (i + 1)}
+                        {isAdmin ? bid.userName?.[0] : i + 1}
                       </div>
                       <div>
                         <p className="text-sm font-black text-gray-800">
-                          {isAdmin ? bid.userName : (bid.alias || "Ishtirokchi")}
+                          {isAdmin ? bid.userName : bid.alias || "Ishtirokchi"}
                         </p>
                         <p className="text-[10px] text-gray-400">
                           {new Date(bid.time).toLocaleTimeString()}
@@ -365,6 +374,7 @@ export default function AuctionRoom({ params }) {
                   </div>
                 ))
               )}
+              <div ref={bidsEndRef} />
             </div>
 
             {/* Controls Area */}
@@ -373,7 +383,9 @@ export default function AuctionRoom({ params }) {
                 <div className="text-center space-y-4">
                   <Clock className="mx-auto text-blue-400 w-16 h-16 animate-pulse" />
                   <p className="text-lg font-black text-[#18436E] uppercase tracking-tighter">
-                    {isAdmin ? "Ishtirokchilar yig'ilishini kuting" : "Savdo boshlanishini kuting"}
+                    {isAdmin
+                      ? "Ishtirokchilar yig'ilishini kuting"
+                      : "Savdo boshlanishini kuting"}
                   </p>
                   {isAdmin && (
                     <button
@@ -418,13 +430,44 @@ export default function AuctionRoom({ params }) {
                       className="w-full bg-[#18436E] hover:bg-[#123354] text-white py-6 rounded-sm font-black text-3xl uppercase tracking-widest shadow-2xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed group flex flex-col items-center gap-1"
                     >
                       QADAM BOSISH
-                      <span className="text-sm font-bold opacity-60">+{lot.firstStep}% ({stepValue.toLocaleString()} UZS)</span>
+                      <span className="text-sm font-bold opacity-60">
+                        +{lot.firstStep}% ({stepValue.toLocaleString()} UZS)
+                      </span>
                     </button>
                     {isAdmin && (
                       <p className="mt-3 text-red-500 font-bold text-sm bg-red-50 px-4 py-2 rounded-sm border border-red-100">
                         Admin qadam bosa olmaydi, faqat nazorat qiladi.
                       </p>
                     )}
+                  </div>
+                </div>
+              )}
+              {phase === "finished_waiting" && (
+                <div className="bg-yellow-50 p-10 rounded-sm border-2 border-dashed border-yellow-300 text-center space-y-4">
+                  <div className="inline-block p-4 bg-yellow-100 rounded-full text-yellow-600 animate-bounce">
+                    <Trophy size={48} />
+                  </div>
+                  <h3 className="text-2xl font-black text-yellow-700 uppercase">
+                    SAVDO YAKUNLANMOQDA
+                  </h3>
+                  <p className="text-yellow-800 font-bold text-lg">
+                    Vaqt tugadi. Admin tomonidan g'oliblik tasdiqlanishini
+                    kuting.
+                  </p>
+                  <div className="bg-white p-4 rounded-sm border border-yellow-200 inline-block">
+                    <p className="text-xs text-gray-400 uppercase font-black mb-1">
+                      Oxirgi holat
+                    </p>
+                    <p className="text-xl font-black text-[#18436E]">
+                      {lastBidder
+                        ? isAdmin
+                          ? lastBidder.userName
+                          : lastBidder.alias
+                        : "Ishtirokchi yo'q"}
+                    </p>
+                    <p className="text-2xl font-black text-green-600">
+                      {currentPrice?.toLocaleString()} UZS
+                    </p>
                   </div>
                 </div>
               )}
@@ -437,26 +480,35 @@ export default function AuctionRoom({ params }) {
                     Auksion Yakunlandi
                   </h2>
                   <div className="bg-white/10 p-6 rounded-sm mb-8 inline-block min-w-[300px]">
-                    <p className="text-gray-400 text-xs font-bold uppercase mb-2 tracking-widest">G'olib ishtirokchi</p>
+                    <p className="text-gray-400 text-xs font-bold uppercase mb-2 tracking-widest">
+                      G'olib ishtirokchi
+                    </p>
                     <p className="text-2xl font-black text-yellow-400">
-                      {lastBidder ? (isAdmin ? lastBidder.userName : lastBidder.alias) : "Aniqlanmadi"}
+                      {lastBidder
+                        ? isAdmin
+                          ? lastBidder.userName
+                          : lastBidder.alias
+                        : "Aniqlanmadi"}
                     </p>
                     <p className="text-4xl font-black mt-4 text-white">
-                      {currentPrice?.toLocaleString()} <span className="text-lg">SO'M</span>
+                      {currentPrice?.toLocaleString()}{" "}
+                      <span className="text-lg">SO'M</span>
                     </p>
                   </div>
 
                   <div className="flex flex-col gap-3 max-w-sm mx-auto">
-                    {(isAdmin || (lastBidder && lastBidder.userId === userId)) && protocolId && (
-                      <a
-                        href={`http://localhost:8080/api/protocol/${protocolId}/download`}
-                        download
-                        className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-sm font-black uppercase tracking-widest flex items-center justify-center gap-3 transition-colors shadow-lg"
-                      >
-                        <Download size={20} />
-                        BAYONNOMANI YUKLAB OLISH (PDF)
-                      </a>
-                    )}
+                    {(isAdmin ||
+                      (lastBidder && lastBidder.userId === userId)) &&
+                      protocolId && (
+                        <a
+                          href={`https://considerate-integrity-production.up.railway.app/api/protocol/${protocolId}/download`}
+                          download
+                          className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-sm font-black uppercase tracking-widest flex items-center justify-center gap-3 transition-colors shadow-lg"
+                        >
+                          <Download size={20} />
+                          BAYONNOMANI YUKLAB OLISH (PDF)
+                        </a>
+                      )}
                     <button
                       onClick={() => router.push("/")}
                       className="bg-white/10 hover:bg-white/20 text-white px-8 py-3 rounded-sm font-bold uppercase tracking-widest transition-colors"
@@ -485,26 +537,32 @@ export default function AuctionRoom({ params }) {
               </div>
 
               {isAdmin ? (
-                 <div className="space-y-2">
-                    <p className="text-[10px] text-gray-400 uppercase font-black px-2 mt-4">Jonli ishtirokchilar</p>
-                    {/* In a real scenario we'd track online participants specifically via socket, 
+                <div className="space-y-2">
+                  <p className="text-[10px] text-gray-400 uppercase font-black px-2 mt-4">
+                    Jonli ishtirokchilar
+                  </p>
+                  {/* In a real scenario we'd track online participants specifically via socket, 
                         but for now we show who has bid at least */}
-                    {Array.from(new Set(bids.map(b => b.userId))).map(uid => {
-                      const userBid = bids.find(b => b.userId === uid);
-                      return (
-                        <div key={uid} className="flex items-center gap-3 p-3 bg-gray-50 rounded-sm border border-gray-100">
-                          <CheckCircle2 size={16} className="text-green-500" />
-                          <span className="font-bold text-xs text-gray-700 uppercase">
-                            {userBid.userName}
-                          </span>
-                        </div>
-                      )
-                    })}
-                 </div>
+                  {Array.from(new Set(bids.map((b) => b.userId))).map((uid) => {
+                    const userBid = bids.find((b) => b.userId === uid);
+                    return (
+                      <div
+                        key={uid}
+                        className="flex items-center gap-3 p-3 bg-gray-50 rounded-sm border border-gray-100"
+                      >
+                        <CheckCircle2 size={16} className="text-green-500" />
+                        <span className="font-bold text-xs text-gray-700 uppercase">
+                          {userBid.userName}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
               ) : (
                 <div className="p-4 bg-gray-50 border border-dashed border-gray-200 rounded-sm text-center">
                   <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest leading-relaxed">
-                    Xavfsizlik maqsadida ishtirokchilar <br /> ma'lumotlari yashirilgan
+                    Xavfsizlik maqsadida ishtirokchilar <br /> ma'lumotlari
+                    yashirilgan
                   </p>
                 </div>
               )}
@@ -518,7 +576,10 @@ export default function AuctionRoom({ params }) {
             </h4>
             <div className="text-[10px] text-blue-100 text-center leading-relaxed space-y-2 opacity-80">
               <p>1. Har bir qadam {lot.firstStep}% ni tashkil etadi.</p>
-              <p>2. Qadam bosilganda vaqt {timeLeft > 0 ? 30 : 0} soniyaga qaytariladi.</p>
+              <p>
+                2. Qadam bosilganda vaqt {timeLeft > 0 ? 30 : 0} soniyaga
+                qaytariladi.
+              </p>
               <p>3. Vaqt tugaganda oxirgi ishtirokchi g'olib hisoblanadi.</p>
               <p>4. Barcha harakatlar protokolga qayd etiladi.</p>
             </div>
@@ -531,9 +592,14 @@ export default function AuctionRoom({ params }) {
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[100] p-6 text-center backdrop-blur-sm">
           <div className="bg-white p-8 rounded-sm max-w-sm">
             <Shield className="text-red-600 mx-auto mb-4" size={48} />
-            <h3 className="text-xl font-black text-gray-900 mb-2 uppercase">Xatolik yuz berdi</h3>
+            <h3 className="text-xl font-black text-gray-900 mb-2 uppercase">
+              Xatolik yuz berdi
+            </h3>
             <p className="text-gray-500 text-sm mb-6">{error}</p>
-            <button onClick={() => window.location.reload()} className="bg-red-600 text-white w-full py-3 rounded-sm font-bold">
+            <button
+              onClick={() => window.location.reload()}
+              className="bg-red-600 text-white w-full py-3 rounded-sm font-bold"
+            >
               Qaytadan yuklash
             </button>
           </div>

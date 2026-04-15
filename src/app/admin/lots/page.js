@@ -145,7 +145,9 @@ export default function LotsPage() {
         consultingPrice: lot.consultingPrice || "",
         status: lot.status,
       });
-      setImagePreview(`http://localhost:8080/upload/${lot.image}`);
+      setImagePreview(
+        `https://considerate-integrity-production.up.railway.app/upload/${lot.image}`,
+      );
       setSelectedImage(null);
 
       if (lot.province?._id || lot.province) {
@@ -281,7 +283,7 @@ export default function LotsPage() {
     try {
       const token = sessionStorage.getItem("adminToken");
       const res = await fetch(
-        `http://localhost:8080/api/application/lot/${lot._id}`,
+        `https://considerate-integrity-production.up.railway.app/api/application/lot/${lot._id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -299,7 +301,7 @@ export default function LotsPage() {
     try {
       const token = sessionStorage.getItem("adminToken");
       const res = await fetch(
-        `http://localhost:8080/api/application/${appId}/status`,
+        `https://considerate-integrity-production.up.railway.app/api/application/${appId}/status`,
         {
           method: "PUT",
           headers: {
@@ -331,7 +333,7 @@ export default function LotsPage() {
     try {
       const token = sessionStorage.getItem("adminToken");
       const res = await fetch(
-        `http://localhost:8080/api/application/${appId}`,
+        `https://considerate-integrity-production.up.railway.app/api/application/${appId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -342,27 +344,6 @@ export default function LotsPage() {
       }
     } catch (err) {
       console.error(err);
-    }
-  };
-
-  const handleCreateProtocol = async (lotId, winnerId) => {
-    if (
-      !window.confirm(
-        "Ushbu foydalanuvchini lot g'olibi deb e'lon qilib, bayonnoma yaratmoqchimisiz?",
-      )
-    )
-      return;
-    try {
-      const res = await protocolService.createProtocol(lotId, winnerId);
-      if (res.message && res.message.includes("yaratildi")) {
-        alert("Bayonnoma muvaffaqiyatli yaratildi!");
-        setIsApplicantsModalOpen(false);
-        router.push("/admin/protocols");
-      } else {
-        alert(res.message || "Xatolik yuz berdi");
-      }
-    } catch (err) {
-      alert("Server xatosi");
     }
   };
 
@@ -445,7 +426,7 @@ export default function LotsPage() {
                       }}
                     >
                       <img
-                        src={`http://localhost:8080/upload/${lot.image}`}
+                        src={`https://considerate-integrity-production.up.railway.app/upload/${lot.image}`}
                         alt={lot.name}
                         style={{
                           width: "100%",
@@ -555,16 +536,33 @@ export default function LotsPage() {
                         className="admin-nav-item"
                         style={{
                           padding: "0.5rem",
-                          color: (lot.status !== "active" || new Date(lot.endDate) < new Date()) ? "#9ca3af" : "#8b5cf6",
-                          cursor: (lot.status !== "active" || new Date(lot.endDate) < new Date()) ? "not-allowed" : "pointer",
-                          opacity: (lot.status !== "active" || new Date(lot.endDate) < new Date()) ? 0.5 : 1,
+                          color:
+                            lot.status !== "active" ||
+                            new Date(lot.endDate) < new Date()
+                              ? "#9ca3af"
+                              : "#8b5cf6",
+                          cursor:
+                            lot.status !== "active" ||
+                            new Date(lot.endDate) < new Date()
+                              ? "not-allowed"
+                              : "pointer",
+                          opacity:
+                            lot.status !== "active" ||
+                            new Date(lot.endDate) < new Date()
+                              ? 0.5
+                              : 1,
                         }}
                         title={
-                          lot.status !== "active" ? "Auksion yakunlangan" :
-                          new Date(lot.endDate) < new Date() ? "Vaqti o'tib ketgan" :
-                          "Auksion xonasiga kirish"
+                          lot.status !== "active"
+                            ? "Auksion yakunlangan"
+                            : new Date(lot.endDate) < new Date()
+                              ? "Vaqti o'tib ketgan"
+                              : "Auksion xonasiga kirish"
                         }
-                        disabled={lot.status !== "active" || new Date(lot.endDate) < new Date()}
+                        disabled={
+                          lot.status !== "active" ||
+                          new Date(lot.endDate) < new Date()
+                        }
                       >
                         <Gavel size={18} />
                       </button>
@@ -807,7 +805,9 @@ export default function LotsPage() {
                         />
                       </div>
                       <div>
-                        <label className="admin-label">Konsalting xizmati narxi</label>
+                        <label className="admin-label">
+                          Konsalting xizmati narxi
+                        </label>
                         <input
                           type="number"
                           className="admin-input"
@@ -972,7 +972,9 @@ export default function LotsPage() {
                       <PhoneInput
                         defaultCountry="uz"
                         value={formData.phone1}
-                        onChange={(phone) => setFormData({ ...formData, phone1: phone })}
+                        onChange={(phone) =>
+                          setFormData({ ...formData, phone1: phone })
+                        }
                         className="admin-phone-input"
                         inputClassName="admin-input"
                         style={{ width: "100%" }}
@@ -983,7 +985,9 @@ export default function LotsPage() {
                       <PhoneInput
                         defaultCountry="uz"
                         value={formData.phone2}
-                        onChange={(phone) => setFormData({ ...formData, phone2: phone })}
+                        onChange={(phone) =>
+                          setFormData({ ...formData, phone2: phone })
+                        }
                         className="admin-phone-input"
                         inputClassName="admin-input"
                         style={{ width: "100%" }}
@@ -1285,7 +1289,7 @@ export default function LotsPage() {
                     }}
                   >
                     <img
-                      src={`http://localhost:8080/upload/${previewLot.image}`}
+                      src={`https://considerate-integrity-production.up.railway.app/upload/${previewLot.image}`}
                       alt={previewLot.name}
                       style={{
                         width: "100%",
@@ -1738,38 +1742,6 @@ export default function LotsPage() {
                               >
                                 <Trash2 size={16} />
                               </button>
-                              {app.status === "approved" && (
-                                <button
-                                  onClick={() =>
-                                    handleCreateProtocol(
-                                      currentLotForApplicants._id,
-                                      app.user?._id,
-                                    )
-                                  }
-                                  style={{
-                                    background: "#18436E",
-                                    border: "none",
-                                    color: "#fff",
-                                    cursor: "pointer",
-                                    padding: "0.25rem 0.5rem",
-                                    borderRadius: "4px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "4px",
-                                  }}
-                                  title="G'olib deb e'lon qilish"
-                                >
-                                  <Trophy size={14} />
-                                  <span
-                                    style={{
-                                      fontSize: "10px",
-                                      fontWeight: "bold",
-                                    }}
-                                  >
-                                    G'OLIB
-                                  </span>
-                                </button>
-                              )}
                             </div>
                           </td>
                         </tr>

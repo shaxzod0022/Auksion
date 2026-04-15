@@ -124,7 +124,7 @@ export default function LotDetailClient({ lot }) {
       <div className="flex-1 space-y-4">
         <div className="bg-white p-3 rounded-sm shadow-xl shadow-blue-900/5 overflow-hidden">
           <img
-            src={`http://localhost:8080/upload/${lot.image}`}
+            src={`https://considerate-integrity-production.up.railway.app/upload/${lot.image}`}
             alt={lot.name}
             className="w-full h-auto aspect-video object-cover rounded-sm"
           />
@@ -317,35 +317,47 @@ export default function LotDetailClient({ lot }) {
                   </span>
                 </div>
 
-                 {/* Entry Button Logic */}
-                 {applicationStatus === "approved" && lot.status === "active" && new Date(lot.endDate).getTime() >= new Date().getTime() ? (
+                 {/* Entry Button Logic — startDate asosida (endDate emas) */}
+                 {applicationStatus === "approved" && lot.status === "active" && new Date(lot.startDate).getTime() <= new Date().getTime() ? (
                    <button
                      onClick={() => router.push(`/auction/${lot.slug}`)}
-                     className="w-full bg-[#18436E] hover:bg-[#18436E]/90 text-white font-black py-4 rounded-sm shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center gap-3 active:scale-95 cursor-pointer"
+                     className="w-full bg-[#18436E] hover:bg-[#18436E]/90 text-white font-black py-4 rounded-sm shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center gap-3 active:scale-95 cursor-pointer animate-pulse"
                    >
-                     AUKSIONGA KIRISH
+                     🔴 AUKSIONGA O'TISH
                    </button>
+                 ) : applicationStatus === "approved" && lot.status === "active" ? (
+                   <div className="w-full p-4 rounded-sm text-center font-bold flex flex-col gap-1 items-center justify-center border bg-blue-50 text-blue-700 border-blue-200">
+                     <span className="text-sm uppercase">Auksion vaqti kelganda kirish tugmasi paydo bo'ladi</span>
+                     <span className="text-xs text-blue-500 mt-1">
+                       Boshlanish: {new Date(lot.startDate).toLocaleString("uz-UZ")}
+                     </span>
+                   </div>
                  ) : (
                    <div className="w-full p-4 rounded-sm text-center font-bold flex flex-col gap-1 items-center justify-center border bg-gray-100 text-gray-500 border-gray-200">
                      <span className="text-lg uppercase">
                        {lot.status !== "active" ? "Auksion yakunlangan" : 
-                        new Date(lot.endDate).getTime() < new Date().getTime() ? "Auksion muddati tugadi" :
                         applicationStatus === "rejected" ? "Arizangiz rad etildi" : "Arizangiz ko'rib chiqilmoqda"}
                      </span>
                    </div>
                  )}
               </div>
+            ) : lot.status !== "active" ? (
+              <div className="w-full p-4 rounded-sm text-center font-bold flex flex-col gap-1 items-center justify-center border bg-gray-100 text-gray-500 border-gray-200">
+                <span className="text-lg uppercase">
+                  Auksion yakunlangan
+                </span>
+              </div>
             ) : new Date(lot.endDate).getTime() < new Date().getTime() ? (
               <div className="w-full p-4 rounded-sm text-center font-bold flex flex-col gap-1 items-center justify-center border bg-gray-100 text-gray-500 border-gray-200">
                 <span className="text-lg uppercase">
-                  Auksion muddati tugadi
+                  Ariza berish muddati tugadi
                 </span>
               </div>
             ) : (
               <button
                 onClick={handleApply}
-                disabled={applying || !timeLeft}
-                className={`w-full ${!timeLeft ? "bg-gray-400" : "bg-[#18436E] hover:bg-[#18436E]/90 cursor-pointer"} text-white font-black py-4 rounded-sm shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center gap-3 active:scale-95 disabled:opacity-75 disabled:active:scale-100`}
+                disabled={applying}
+                className={`w-full bg-[#18436E] hover:bg-[#18436E]/90 cursor-pointer text-white font-black py-4 rounded-sm shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center gap-3 active:scale-95 disabled:opacity-75 disabled:active:scale-100`}
               >
                 {applying
                   ? "YUBORILMOQDA..."

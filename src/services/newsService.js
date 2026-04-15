@@ -1,4 +1,5 @@
-const API_URL = "http://localhost:8080/api/news";
+const API_URL =
+  "https://considerate-integrity-production.up.railway.app/api/news";
 
 const getAuthHeaders = () => {
   const token = sessionStorage.getItem("adminToken");

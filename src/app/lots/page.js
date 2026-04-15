@@ -20,9 +20,12 @@ export const metadata = {
 export default async function Page() {
   const fetchCategories = async () => {
     try {
-      const res = await fetch("http://localhost:8080/api/category", {
-        next: { revalidate: 60 },
-      });
+      const res = await fetch(
+        "https://considerate-integrity-production.up.railway.app/api/category",
+        {
+          next: { revalidate: 60 },
+        },
+      );
       return res.json();
     } catch (error) {
       console.error("Error fetching categories on server:", error);

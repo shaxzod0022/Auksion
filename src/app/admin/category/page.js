@@ -53,7 +53,9 @@ export default function CategoryPage() {
       setFormData({
         name: category.name,
       });
-      setImagePreview(`http://localhost:8080/upload/${category.image}`);
+      setImagePreview(
+        `https://considerate-integrity-production.up.railway.app/upload/${category.image}`,
+      );
       setSelectedImage(null);
     } else {
       setEditingCategory(null);
@@ -202,7 +204,7 @@ export default function CategoryPage() {
                       }}
                     >
                       <img
-                        src={`http://localhost:8080/upload/${cat.image}`}
+                        src={`https://considerate-integrity-production.up.railway.app/upload/${cat.image}`}
                         alt={cat.name}
                         style={{
                           width: "100%",

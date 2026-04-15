@@ -58,7 +58,9 @@ export default function NewsPage() {
         shortDescription: news.shortDescription,
         longDescription: news.longDescription,
       });
-      setImagePreview(`http://localhost:8080/upload/${news.image}`);
+      setImagePreview(
+        `https://considerate-integrity-production.up.railway.app/upload/${news.image}`,
+      );
       setSelectedImage(null);
     } else {
       setEditingNews(null);
@@ -207,7 +209,7 @@ export default function NewsPage() {
                       }}
                     >
                       <img
-                        src={`http://localhost:8080/upload/${news.image}`}
+                        src={`https://considerate-integrity-production.up.railway.app/upload/${news.image}`}
                         alt={news.name}
                         style={{
                           width: "100%",
