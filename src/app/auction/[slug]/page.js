@@ -101,15 +101,7 @@ export default function AuctionRoom({ params }) {
         );
         setSocket(socketInstance);
 
-        socketInstance.emit("join_auction", {
-          slug,
-          isAdmin: isAdm,
-          userId: userData._id,
-          userName: isAdm
-            ? "Admin"
-            : `${userData.lastName} ${userData.firstName}`,
-        });
-
+        // ALWAYS SET LISTENERS BEFORE EMITTING JOIN TO AVOID RACE CONDITIONS ON REFRESH
         socketInstance.on("auction_state", (state) => {
           setPhase(state.phase);
           setTimeLeft(state.timeLeft);
@@ -142,6 +134,15 @@ export default function AuctionRoom({ params }) {
         });
 
         socketInstance.on("error", (msg) => setError(msg));
+
+        socketInstance.emit("join_auction", {
+          slug,
+          isAdmin: isAdm,
+          userId: userData._id,
+          userName: isAdm
+            ? "Admin"
+            : `${userData.lastName} ${userData.firstName}`,
+        });
 
         return () => socketInstance.disconnect();
       } catch (err) {
@@ -235,7 +236,7 @@ export default function AuctionRoom({ params }) {
   const stepValue = Math.floor((lot.startPrice * lot.firstStep) / 100);
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
+    <div className="h-screen bg-gray-100 flex flex-col font-sans overflow-hidden">
       {/* Header */}
       <header className="bg-[#18436E] text-white p-4 shadow-xl z-20">
         <div className="max-w-[1440px] mx-auto flex justify-between items-center">
@@ -301,9 +302,9 @@ export default function AuctionRoom({ params }) {
       </header>
 
       {/* Main Container */}
-      <main className="flex-1 flex flex-col lg:flex-row max-w-[1440px] mx-auto w-full p-4 gap-4 overflow-hidden relative">
+      <main className="flex-1 flex flex-col lg:flex-row max-w-[1440px] mx-auto w-full p-4 gap-4 overflow-hidden relative min-h-0">
         {/* Left Side: Lot Info & History */}
-        <div className="lg:w-2/3 flex flex-col gap-4 overflow-hidden">
+        <div className="lg:w-2/3 flex flex-col gap-4 overflow-hidden h-full">
           {/* Price Cards */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-white p-6 rounded-sm shadow-sm border-l-4 border-blue-600">
@@ -338,7 +339,7 @@ export default function AuctionRoom({ params }) {
               </div>
             </div>
 
-            <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50/20 h-[400px] lg:h-auto">
+            <div className="flex-1 p-4 overflow-y-auto space-y-3 bg-gray-50/20">
               {bids.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-gray-300">
                   <MessageSquare size={48} className="mb-2 opacity-20" />
@@ -356,7 +357,11 @@ export default function AuctionRoom({ params }) {
                       </div>
                       <div>
                         <p className="text-sm font-black text-gray-800">
-                          {isAdmin ? bid.userName : bid.alias || "Ishtirokchi"}
+                          {isAdmin
+                            ? bid.userName
+                            : bid.userId === userId
+                              ? "Sizning qadamingiz"
+                              : bid.alias || "Ishtirokchi"}
                         </p>
                         <p className="text-[10px] text-gray-400">
                           {new Date(bid.time).toLocaleTimeString()}
@@ -462,7 +467,9 @@ export default function AuctionRoom({ params }) {
                       {lastBidder
                         ? isAdmin
                           ? lastBidder.userName
-                          : lastBidder.alias
+                          : lastBidder.userId === userId
+                            ? "Sizning qadamingiz"
+                            : lastBidder.alias
                         : "Ishtirokchi yo'q"}
                     </p>
                     <p className="text-2xl font-black text-green-600">
@@ -487,7 +494,9 @@ export default function AuctionRoom({ params }) {
                       {lastBidder
                         ? isAdmin
                           ? lastBidder.userName
-                          : lastBidder.alias
+                          : lastBidder.userId === userId
+                            ? "Sizning qadamingiz"
+                            : lastBidder.alias
                         : "Aniqlanmadi"}
                     </p>
                     <p className="text-4xl font-black mt-4 text-white">
@@ -523,7 +532,7 @@ export default function AuctionRoom({ params }) {
         </div>
 
         {/* Right Side: Participant List & Admin Control */}
-        <div className="lg:w-1/3 flex flex-col gap-4">
+        <div className="lg:w-1/3 flex flex-col gap-4 h-full overflow-y-auto pr-1">
           <div className="bg-white p-4 rounded-sm shadow-sm border border-gray-200">
             <h3 className="font-black text-[#18436E] uppercase text-[10px] tracking-widest mb-4 border-b pb-2 flex items-center gap-2">
               <User size={14} /> ISHTIROKCHILAR RO'YXATI
@@ -574,14 +583,21 @@ export default function AuctionRoom({ params }) {
             <h4 className="font-black uppercase tracking-tighter text-lg leading-tight mb-2">
               Savdo Qoidalari
             </h4>
-            <div className="text-[10px] text-blue-100 text-center leading-relaxed space-y-2 opacity-80">
-              <p>1. Har bir qadam {lot.firstStep}% ni tashkil etadi.</p>
+            <div className="text-[12px] text-blue-100 text-center leading-relaxed space-y-2 opacity-80">
               <p>
-                2. Qadam bosilganda vaqt {timeLeft > 0 ? 30 : 0} soniyaga
-                qaytariladi.
+                1. Asosiy qoida - auksion tugamagunicha sahifadan chiqib ketmang
+                aks holda qayta auksionga qo'shila olmaysiz.
               </p>
-              <p>3. Vaqt tugaganda oxirgi ishtirokchi g'olib hisoblanadi.</p>
-              <p>4. Barcha harakatlar protokolga qayd etiladi.</p>
+              <p>2. Har bir qadam {lot.firstStep}% ni tashkil etadi.</p>
+              <p>
+                3. Qaysidur ishtirokchi qadam bosganida vaqt{" "}
+                {timeLeft > 0 ? 180 : 0} soniya (3 daqiqa) qayta sanaladi va bu
+                vaqt ichida siz o'z qadamizni bosishingiz mumkin.
+              </p>
+              <p>
+                4. Berilgan 3 daqiqa vaqt tugaguncha hech bir ishtirokchi qadam
+                bosmasa, oxirgi qadam egasi g'olib hisoblanadi.
+              </p>
             </div>
           </div>
         </div>

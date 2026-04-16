@@ -34,7 +34,7 @@ export default function Statistica() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
         {data.map((item) => (
           <div key={item.id} className="flex flex-col items-center gap-2">
-            <img className="sm:w-24 w-16" src={item.image} alt={item.title} />
+            <img className="sm:w-16 w-12" src={item.image} alt={item.title} />
             <div className="w-full h-px bg-[#18436E]"></div>
             <span
               className={`${styles.span} text-gray-500 uppercase tracking-wider`}

@@ -17,6 +17,7 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
   const [regions, setRegions] = useState([]);
 
   const [formData, setFormData] = useState({
+    lotNumber: searchParams.get("lotNumber") || "",
     name: searchParams.get("name") || "",
     lotType: searchParams.get("lotType") || "",
     province: searchParams.get("province") || "",
@@ -73,6 +74,7 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
     }
 
     const query = new URLSearchParams();
+    if (formData.lotNumber) query.set("lotNumber", formData.lotNumber);
     if (formData.name) query.set("name", formData.name);
     if (formData.lotType) query.set("lotType", formData.lotType);
     if (formData.province) query.set("province", formData.province);
@@ -83,6 +85,7 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
 
   const handleClear = () => {
     const emptyState = {
+      lotNumber: "",
       name: "",
       lotType: "",
       province: "",
@@ -107,8 +110,29 @@ export default function LotSearchBar({ onSearch, onClear, className }) {
     >
       <form
         onSubmit={handleSearch}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4"
       >
+        {/* Lot Number Search */}
+        <div className="relative">
+          <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">
+            Lot raqami
+          </label>
+          <div className="relative">
+            <Search
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              size={18}
+            />
+            <input
+              type="text"
+              name="lotNumber"
+              placeholder="Masalan: 12345678"
+              className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-sm"
+              value={formData.lotNumber}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+
         {/* Keyword Search */}
         <div className="relative">
           <label className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2 block">

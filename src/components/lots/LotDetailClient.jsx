@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import applicationService from "@/services/applicationService";
-import { styles } from "@/styles/styles";
 import {
   Calendar,
   Clock,
@@ -12,7 +11,6 @@ import {
   MapPin,
   Phone,
   History,
-  Info,
   Layers,
   HandCoins,
   InfoIcon,
@@ -174,6 +172,30 @@ export default function LotDetailClient({ lot }) {
             <InfoRow icon={Phone} label="Bog'lanish" value={lot.phone1} />
           </div>
         </div>
+
+        {/* Dynamic Attributes Section */}
+        {lot.attributes && lot.attributes.length > 0 && (
+          <div className="bg-white p-4 rounded-sm shadow-xl shadow-blue-900/5 border border-gray-100">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-sm bg-blue-100 flex items-center justify-center text-[#18436E]">
+                <InfoIcon className="w-6 h-6" />
+              </div>
+              <h3 className="text-2xl font-black text-[#18436E] uppercase tracking-tight">
+                Mulk Xususiyatlari
+              </h3>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+              {lot.attributes.map((attr, idx) => (
+                <InfoRow 
+                  key={idx} 
+                  icon={InfoIcon} 
+                  label={attr.key} 
+                  value={attr.value} 
+                />
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Right Column - Sidebar */}

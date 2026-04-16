@@ -19,7 +19,7 @@ export default function Categories({ initialData = [] }) {
             backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${API_BASE_URL}/upload/${category.image})`,
           }}
           key={category._id}
-          className="text-white bg-center bg-no-repeat bg-cover text-lg font-medium flex flex-col items-center justify-center h-40 rounded-sm hover:shadow-lg transition-all duration-300 group cursor-pointer"
+          className="text-white bg-center bg-no-repeat bg-cover text-lg font-medium flex flex-col items-center justify-center h-40 rounded-sm hover:shadow-lg transition-all duration-300 group cursor-pointer py-24"
         >
           <h3
             className={`${styles.h3} text-white group-hover:scale-110 transition-transform`}

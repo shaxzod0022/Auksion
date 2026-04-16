@@ -149,7 +149,7 @@ export default function LotsList({ data = [], pagination = {} }) {
                 >
                   Boshlang'ich narx
                 </p>
-                <p className={`${styles.h4} font-extrabold text-[#18436E]`}>
+                <p className={`${styles.span} font-extrabold text-[#18436E]`}>
                   {item.startPrice.toLocaleString()} so'm
                 </p>
               </div>

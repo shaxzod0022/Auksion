@@ -73,13 +73,7 @@ export default function AdminAuctionRoom({ params }) {
         );
         setSocket(socketInstance);
 
-        socketInstance.emit("join_auction", {
-          slug,
-          isAdmin: true,
-          userId: "admin",
-          userName: "Admin",
-        });
-
+        // LISTENERS BEFORE EMIT TO ENSURE STATE IS CAPTURED ON RECONNECT/REFRESH
         socketInstance.on("auction_state", (state) => {
           setPhase(state.phase);
           setTimeLeft(state.timeLeft);
@@ -109,6 +103,13 @@ export default function AdminAuctionRoom({ params }) {
           setLastBidder(data.winner);
           setCurrentPrice(data.finalPrice);
           setProtocolId(data.protocolId);
+        });
+
+        socketInstance.emit("join_auction", {
+          slug,
+          isAdmin: true,
+          userId: "admin",
+          userName: "Admin",
         });
 
         return () => socketInstance.disconnect();
@@ -182,7 +183,7 @@ export default function AdminAuctionRoom({ params }) {
     : 0;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col font-sans">
+    <div className="h-screen bg-gray-100 flex flex-col font-sans overflow-hidden">
       {/* Admin Header */}
       <header className="bg-[#0f172a] text-white p-4 shadow-xl">
         <div className="max-w-[1600px] mx-auto flex justify-between items-center">
@@ -264,9 +265,9 @@ export default function AdminAuctionRoom({ params }) {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col lg:flex-row max-w-[1600px] mx-auto w-full p-4 gap-4 overflow-hidden">
+      <main className="flex-1 flex flex-col lg:flex-row max-w-[1600px] mx-auto w-full p-4 gap-4 overflow-hidden min-h-0">
         {/* Left: Lot Info + Controls */}
-        <div className="lg:w-1/4 flex flex-col gap-4">
+        <div className="lg:w-1/4 flex flex-col gap-4 overflow-y-auto h-full pr-1">
           {/* Stats */}
           <div className="bg-white p-5 rounded-sm shadow-sm border border-gray-200">
             <p className="text-[10px] text-gray-400 font-black uppercase mb-1">
@@ -399,7 +400,7 @@ export default function AdminAuctionRoom({ params }) {
               Jonli Yangilanmoqda
             </span>
           </div>
-          <div className="flex-1 p-4 overflow-y-auto space-y-2 bg-gray-50/30 font-mono text-sm h-[400px] lg:h-auto">
+          <div className="flex-1 p-4 overflow-y-auto space-y-2 bg-gray-50/30 font-mono text-sm">
             {bids.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-gray-300 py-20">
                 <MessageSquare size={32} className="opacity-20 mb-2" />
@@ -451,7 +452,7 @@ export default function AdminAuctionRoom({ params }) {
         </div>
 
         {/* Right: Participants */}
-        <div className="lg:w-1/5 flex flex-col gap-4">
+        <div className="lg:w-1/5 flex flex-col gap-4 h-full overflow-y-auto pr-1">
           <div className="bg-white p-4 rounded-sm shadow-sm border border-gray-200">
             <h3 className="font-black text-[#18436E] uppercase text-[10px] tracking-widest mb-4 border-b pb-2 flex items-center gap-2">
               <User size={14} /> ISHTIROKCHILAR

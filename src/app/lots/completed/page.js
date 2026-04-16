@@ -13,6 +13,7 @@ export default async function CompletedLotsPage({ searchParams }) {
   const {
     page = 1,
     name = "",
+    lotNumber = "",
     lotType = "",
     province = "",
     region = "",
@@ -24,6 +25,7 @@ export default async function CompletedLotsPage({ searchParams }) {
         page,
         limit: 12,
         name,
+        lotNumber,
         lotType,
         province,
         region,

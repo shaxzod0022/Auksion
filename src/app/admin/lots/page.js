@@ -76,6 +76,8 @@ export default function LotsPage() {
     consultationPrice: "",
     consultingPrice: "",
     status: "active",
+    basisDocument: "",
+    attributes: [],
   });
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
@@ -144,6 +146,8 @@ export default function LotsPage() {
         consultationPrice: lot.consultationPrice,
         consultingPrice: lot.consultingPrice || "",
         status: lot.status,
+        basisDocument: lot.basisDocument || "",
+        attributes: Array.isArray(lot.attributes) ? [...lot.attributes] : [],
       });
       setImagePreview(
         `https://considerate-integrity-production.up.railway.app/upload/${lot.image}`,
@@ -177,6 +181,8 @@ export default function LotsPage() {
         consultationPrice: "",
         consultingPrice: "",
         status: "active",
+        basisDocument: "",
+        attributes: [],
       });
       setImagePreview(null);
       setSelectedImage(null);
@@ -218,6 +224,28 @@ export default function LotsPage() {
     }
   };
 
+  const handleAddAttribute = () => {
+    setFormData((prev) => ({
+      ...prev,
+      attributes: [...prev.attributes, { key: "", value: "" }],
+    }));
+  };
+
+  const handleRemoveAttribute = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      attributes: prev.attributes.filter((_, i) => i !== index),
+    }));
+  };
+
+  const handleAttributeChange = (index, field, value) => {
+    setFormData((prev) => {
+      const newAttrs = [...prev.attributes];
+      newAttrs[index][field] = value;
+      return { ...prev, attributes: newAttrs };
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -230,6 +258,9 @@ export default function LotsPage() {
     if (selectedImage) {
       data.append("image", selectedImage);
     }
+
+    // Stringify attributes array for FormData
+    data.set("attributes", JSON.stringify(formData.attributes));
 
     try {
       if (editingLot) {
@@ -1050,6 +1081,135 @@ export default function LotsPage() {
                   </div>
                 </div>
 
+                {/* SECTION 4: QO'SHIMCHA MA'LUMOTLAR VA XUSUSIYATLAR */}
+                <div style={{ marginBottom: "2rem" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.75rem",
+                      marginBottom: "1.25rem",
+                      color: "var(--admin-accent)",
+                      fontWeight: "700",
+                    }}
+                  >
+                    <Package size={20} />
+                    Mulk Xususiyatlari (Dinamik)
+                  </div>
+
+                  <div style={{ marginBottom: "1rem" }}>
+                    <label className="admin-label">
+                      Auktsionga qo'yish uchun asos (hujjat)
+                    </label>
+                    <input
+                      className="admin-input"
+                      value={formData.basisDocument}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          basisDocument: e.target.value,
+                        })
+                      }
+                      placeholder="Masalan: Buyurtma asosida olingan buyurtmasi"
+                    />
+                  </div>
+
+                  <div style={{ display: "grid", gap: "0.75rem" }}>
+                    {formData.attributes.map((attr, index) => (
+                      <div
+                        key={index}
+                        style={{
+                          display: "flex",
+                          gap: "0.5rem",
+                          alignItems: "flex-end",
+                        }}
+                      >
+                        <div style={{ flex: 1 }}>
+                          <label
+                            className="admin-label"
+                            style={{
+                              fontSize: "0.7rem",
+                              marginBottom: "0.2rem",
+                            }}
+                          >
+                            Nomlanishi
+                          </label>
+                          <input
+                            className="admin-input"
+                            value={attr.key}
+                            onChange={(e) =>
+                              handleAttributeChange(
+                                index,
+                                "key",
+                                e.target.value,
+                              )
+                            }
+                            placeholder="Masalan: Rusumi"
+                          />
+                        </div>
+                        <div style={{ flex: 1 }}>
+                          <label
+                            className="admin-label"
+                            style={{
+                              fontSize: "0.7rem",
+                              marginBottom: "0.2rem",
+                            }}
+                          >
+                            Qiymati
+                          </label>
+                          <input
+                            className="admin-input"
+                            value={attr.value}
+                            onChange={(e) =>
+                              handleAttributeChange(
+                                index,
+                                "value",
+                                e.target.value,
+                              )
+                            }
+                            placeholder="Masalan: Toyota"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveAttribute(index)}
+                          style={{
+                            padding: "0.6rem",
+                            background: "#fee2e2",
+                            color: "#991b1b",
+                            border: "none",
+                            borderRadius: "0.5rem",
+                            cursor: "pointer",
+                          }}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      onClick={handleAddAttribute}
+                      style={{
+                        padding: "0.75rem",
+                        background: "#f1f5f9",
+                        color: "var(--admin-accent)",
+                        border: "1px dashed var(--admin-accent)",
+                        borderRadius: "0.75rem",
+                        cursor: "pointer",
+                        fontWeight: "600",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "0.5rem",
+                        marginTop: "0.5rem",
+                      }}
+                    >
+                      <Plus size={16} />
+                      Yangi xususiyat qo'shish
+                    </button>
+                  </div>
+                </div>
+
                 {/* SECTION 5: TAVSIF VA RASM */}
                 <div style={{ marginBottom: "2rem" }}>
                   <div
@@ -1405,6 +1565,43 @@ export default function LotsPage() {
                       </p>
                     </div>
                   </div>
+
+                  {previewLot.attributes &&
+                    previewLot.attributes.length > 0 && (
+                      <div style={{ marginBottom: "2rem" }}>
+                        <h4
+                          style={{
+                            fontWeight: "700",
+                            marginBottom: "0.75rem",
+                            fontSize: "1rem",
+                          }}
+                        >
+                          Mulk Xususiyatlari:
+                        </h4>
+                        <div style={{ display: "grid", gap: "0.5rem" }}>
+                          {previewLot.attributes.map((attr, idx) => (
+                            <div
+                              key={idx}
+                              style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                padding: "0.5rem 0",
+                                borderBottom: "1px solid #f1f5f9",
+                              }}
+                            >
+                              <span
+                                style={{ color: "var(--admin-text-muted)" }}
+                              >
+                                {attr.key}:
+                              </span>
+                              <span style={{ fontWeight: "600" }}>
+                                {attr.value}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                   <div style={{ display: "grid", gap: "1.5rem" }}>
                     <div

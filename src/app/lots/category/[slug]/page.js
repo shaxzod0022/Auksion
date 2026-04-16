@@ -10,6 +10,8 @@ export default async function CategoryLotsPage({ params, searchParams }) {
   const {
     page = 1,
     name = "",
+    lotNumber = "",
+    lotType = "",
     province = "",
     region = "",
   } = await searchParams;
@@ -35,6 +37,8 @@ export default async function CategoryLotsPage({ params, searchParams }) {
         category: slug,
         page,
         name,
+        lotNumber,
+        lotType,
         province,
         region,
         limit: 12,
