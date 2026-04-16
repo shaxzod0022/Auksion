@@ -1,5 +1,6 @@
 export { default as Navbar } from "./helper/Navbar";
 export { default as NewsHome } from "./home/News";
+export { default as HomeSearchBar } from "./home/HomeSearchBar";
 export { default as Lots } from "./home/Lots";
 export { default as Statistica } from "./home/Statistica";
 export { default as Payment } from "./home/Payment";

@@ -1,4 +1,4 @@
-import { Categories, Lots, NewsHome, Payment, Statistica } from "@/components";
+import { Categories, HomeSearchBar, Lots, NewsHome, Payment, Statistica } from "@/components";
 
 export default async function Home() {
   const fetchLatestLots = async () => {
@@ -55,6 +55,7 @@ export default async function Home() {
   return (
     <main className="bg-gray-200 min-h-screen">
       <NewsHome initialData={news} />
+      <HomeSearchBar />
       <Categories initialData={categories} />
       <Lots initialData={lots} />
       <Statistica />
