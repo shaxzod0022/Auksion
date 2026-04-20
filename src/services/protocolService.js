@@ -11,11 +11,20 @@ const getAuthHeaders = () => {
 };
 
 const protocolService = {
-  createProtocol: async (lotId, winnerId) => {
+  createProtocol: async (data) => {
     const response = await fetch(API_URL, {
       method: "POST",
       headers: getAuthHeaders(),
-      body: JSON.stringify({ lotId, winnerId }),
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  },
+
+  createManualProtocol: async (data) => {
+    const response = await fetch(`${API_URL}/manual`, {
+      method: "POST",
+      headers: getAuthHeaders(),
+      body: JSON.stringify(data),
     });
     return response.json();
   },
@@ -45,6 +54,14 @@ const protocolService = {
 
   getDownloadUrl: (id) => {
     return `${API_URL}/${id}/download`;
+  },
+
+  deleteProtocol: async (id) => {
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "DELETE",
+      headers: getAuthHeaders(),
+    });
+    return response.json();
   },
 };
 

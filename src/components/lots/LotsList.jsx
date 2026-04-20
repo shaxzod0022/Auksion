@@ -32,7 +32,7 @@ const Timer = ({ targetDate }) => {
           hours: Math.floor(
             (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
           ),
-          minutes: Math.floor((distance % (1000 * 60)) / (1000 * 60)),
+          minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
           seconds: Math.floor((distance % (1000 * 60)) / 1000),
         });
       }
@@ -93,12 +93,19 @@ export default function LotsList({ data = [], pagination = {} }) {
 
   if (!data || data.length === 0) {
     return (
-      <div className={`${styles.paddingCont} flex flex-col items-center justify-center bg-gray-50 rounded-xl border-2 border-dashed border-gray-200`}>
-        <div className="text-gray-400 mb-4 text-6xl">📦</div>
-        <h3 className="text-xl font-bold text-gray-600 mb-2">Hozircha lotlar mavjud emas</h3>
-        <p className="text-gray-400 text-center max-w-md">
-          Ushbu kategoriya bo'yicha hozirda faol lotlar topilmadi. Iltimos, boshqa kategoriyalarni ko'zdan kechiring.
-        </p>
+      <div className={`${styles.paddingCont} py-5!`}>
+        <div
+          className={`${styles.paddingCont} flex flex-col items-center justify-center bg-gray-50 rounded-sm border-2 border-dashed border-gray-200`}
+        >
+          <div className="text-gray-400 mb-4 text-6xl">📦</div>
+          <h3 className="text-xl font-bold text-gray-600 mb-2">
+            Hozircha lotlar mavjud emas
+          </h3>
+          <p className="text-gray-400 text-center max-w-md">
+            Ushbu kategoriya bo'yicha hozirda faol lotlar topilmadi. Iltimos,
+            boshqa kategoriyalarni ko'zdan kechiring.
+          </p>
+        </div>{" "}
       </div>
     );
   }
@@ -131,14 +138,20 @@ export default function LotsList({ data = [], pagination = {} }) {
                 <h3
                   className={`${styles.h4} font-bold text-center text-gray-800 leading-tight`}
                 >
-                  {item.status === "active" ? "Auksion o'tkazish vaqti" : "Savdo holati"}
+                  {item.status === "active"
+                    ? "Auksion o'tkazish vaqti"
+                    : "Savdo holati"}
                 </h3>
                 {item.status === "active" ? (
                   <Timer targetDate={item.startDate} />
                 ) : (
-                  <p className={`${styles.p} font-bold ${
-                    item.status === "successful" ? "text-green-600" : "text-red-500"
-                  }`}>
+                  <p
+                    className={`${styles.p} font-bold ${
+                      item.status === "successful"
+                        ? "text-green-600"
+                        : "text-red-500"
+                    }`}
+                  >
                     {item.status === "successful" ? "LOT SOTILDI" : "SOTILMADI"}
                   </p>
                 )}

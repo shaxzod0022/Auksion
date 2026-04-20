@@ -31,6 +31,7 @@ export default function AdminAuctionRoom({ params }) {
   const [bids, setBids] = useState([]);
   const [lastBidder, setLastBidder] = useState(null);
   const [protocolId, setProtocolId] = useState(null);
+  const [participants, setParticipants] = useState([]);
 
   const bidsEndRef = useRef(null);
 
@@ -80,6 +81,11 @@ export default function AdminAuctionRoom({ params }) {
           setCurrentPrice(state.currentPrice);
           setBids(state.bids || []);
           setLastBidder(state.lastBidder);
+          setParticipants(state.participants || []);
+        });
+
+        socketInstance.on("participants_update", (data) => {
+          setParticipants(data.participants || []);
         });
 
         socketInstance.on("timer_update", (data) => {
@@ -457,18 +463,17 @@ export default function AdminAuctionRoom({ params }) {
             <h3 className="font-black text-[#18436E] uppercase text-[10px] tracking-widest mb-4 border-b pb-2 flex items-center gap-2">
               <User size={14} /> ISHTIROKCHILAR
             </h3>
-            {bids.length === 0 ? (
+            {participants.length === 0 ? (
               <p className="text-xs text-gray-400 italic text-center py-4">
-                Hali hech kim qadam bosmagan
+                Ishtirokchilar kutilmoqda...
               </p>
             ) : (
               <div className="space-y-2">
-                {Array.from(new Set(bids.map((b) => b.userId))).map((uid) => {
-                  const userBid = bids.find((b) => b.userId === uid);
-                  const isWinner = lastBidder?.userId === uid;
+                {participants.map((p, idx) => {
+                  const isWinner = lastBidder?.userId === p.userId;
                   return (
                     <div
-                      key={uid}
+                      key={idx}
                       className={`flex items-center gap-2 p-2 rounded-sm text-xs font-bold border ${isWinner ? "bg-yellow-50 border-yellow-300 text-yellow-700" : "bg-gray-50 border-gray-100 text-gray-700"}`}
                     >
                       <CheckCircle2
@@ -477,7 +482,7 @@ export default function AdminAuctionRoom({ params }) {
                           isWinner ? "text-yellow-500" : "text-green-400"
                         }
                       />
-                      <span className="truncate">{userBid?.userName}</span>
+                      <span className="truncate">{p.userName}</span>
                     </div>
                   );
                 })}

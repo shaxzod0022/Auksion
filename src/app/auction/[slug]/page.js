@@ -36,6 +36,7 @@ export default function AuctionRoom({ params }) {
   const [bids, setBids] = useState([]);
   const [lastBidder, setLastBidder] = useState(null);
   const [protocolId, setProtocolId] = useState(null);
+  const [participants, setParticipants] = useState([]);
   const [error, setError] = useState("");
 
   const bidsEndRef = useRef(null);
@@ -108,6 +109,11 @@ export default function AuctionRoom({ params }) {
           setCurrentPrice(state.currentPrice);
           setBids(state.bids);
           setLastBidder(state.lastBidder);
+          setParticipants(state.participants || []);
+        });
+
+        socketInstance.on("participants_update", (data) => {
+          setParticipants(data.participants || []);
         });
 
         socketInstance.on("timer_update", (data) => {
@@ -568,12 +574,28 @@ export default function AuctionRoom({ params }) {
                   })}
                 </div>
               ) : (
-                <div className="p-4 bg-gray-50 border border-dashed border-gray-200 rounded-sm text-center">
-                  <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest leading-relaxed">
-                    Xavfsizlik maqsadida ishtirokchilar <br /> ma'lumotlari
-                    yashirilgan
+                <>
+                  <p className="text-[10px] text-gray-400 uppercase font-black px-2 mt-4">
+                    Ishtirokchilar
                   </p>
-                </div>
+                  {participants.map((p, idx) => (
+                    <div
+                      key={idx}
+                      className="flex items-center gap-3 p-3 bg-gray-50 rounded-sm border border-gray-100"
+                    >
+                      <CheckCircle2 size={16} className="text-green-500" />
+                      <span className="font-bold text-xs text-gray-700 uppercase">
+                        {p.userName}
+                      </span>
+                    </div>
+                  ))}
+                  <div className="p-4 bg-gray-50 border border-dashed border-gray-200 rounded-sm text-center">
+                    <p className="text-[10px] text-gray-400 uppercase font-black tracking-widest leading-relaxed">
+                      Xavfsizlik maqsadida ishtirokchilar <br /> ma'lumotlari
+                      yashirilgan
+                    </p>
+                  </div>
+                </>
               )}
             </div>
           </div>

@@ -32,6 +32,7 @@ import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 import LotSearchBar from "@/components/lots/LotSearchBar";
 import protocolService from "@/services/protocolService";
+import { formatDateForInput } from "@/utils/dateUtils";
 
 export default function LotsPage() {
   const router = useRouter();
@@ -130,8 +131,8 @@ export default function LotsPage() {
         lotType: lot.lotType?._id || lot.lotType,
         category: lot.category?._id || lot.category,
         startPrice: lot.startPrice,
-        startDate: new Date(lot.startDate).toISOString().slice(0, 16),
-        endDate: new Date(lot.endDate).toISOString().slice(0, 16),
+        startDate: formatDateForInput(lot.startDate),
+        endDate: formatDateForInput(lot.endDate),
         salesVolume: lot.salesVolume,
         description: lot.description,
         province: lot.province,
@@ -568,32 +569,17 @@ export default function LotsPage() {
                         style={{
                           padding: "0.5rem",
                           color:
-                            lot.status !== "active" ||
-                            new Date(lot.endDate) < new Date()
-                              ? "#9ca3af"
-                              : "#8b5cf6",
+                            lot.status !== "active" ? "#9ca3af" : "#8b5cf6",
                           cursor:
-                            lot.status !== "active" ||
-                            new Date(lot.endDate) < new Date()
-                              ? "not-allowed"
-                              : "pointer",
-                          opacity:
-                            lot.status !== "active" ||
-                            new Date(lot.endDate) < new Date()
-                              ? 0.5
-                              : 1,
+                            lot.status !== "active" ? "not-allowed" : "pointer",
+                          opacity: lot.status !== "active" ? 0.5 : 1,
                         }}
                         title={
                           lot.status !== "active"
                             ? "Auksion yakunlangan"
-                            : new Date(lot.endDate) < new Date()
-                              ? "Vaqti o'tib ketgan"
-                              : "Auksion xonasiga kirish"
+                            : "Auksion xonasiga kirish"
                         }
-                        disabled={
-                          lot.status !== "active" ||
-                          new Date(lot.endDate) < new Date()
-                        }
+                        disabled={lot.status !== "active"}
                       >
                         <Gavel size={18} />
                       </button>
@@ -1110,7 +1096,7 @@ export default function LotsPage() {
                           basisDocument: e.target.value,
                         })
                       }
-                      placeholder="Masalan: Buyurtma asosida olingan buyurtmasi"
+                      placeholder="Masalan: Buyurtma asosida olingan"
                     />
                   </div>
 
