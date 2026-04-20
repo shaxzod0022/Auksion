@@ -78,7 +78,7 @@ export default function VerifyProtocol({ params }) {
             Haqiqiylik Tasdiqlandi
           </h1>
           <p className="text-blue-200 text-[10px] font-black uppercase tracking-[0.3em] mt-3">
-            VERIFIED ELECTRONIC PROTOCOL
+            TASDIQLANGAN ELEKTRON PROTOKOL
           </p>
         </div>
 
@@ -92,18 +92,20 @@ export default function VerifyProtocol({ params }) {
             <div className="grid grid-cols-1 gap-4">
               <div className="flex justify-between items-center p-4 bg-gray-50 rounded-sm border border-gray-100">
                 <span className="text-[10px] text-gray-500 font-black">
-                  RAQAMI
+                  LOT №
                 </span>
                 <span className="font-black text-[#18436E] text-lg">
-                  {protocol.protocolNumber}
+                  {protocol.lotData?.lotNumber}
                 </span>
               </div>
               <div className="flex justify-between items-center p-4 bg-gray-50 rounded-sm border border-gray-100">
                 <span className="text-[10px] text-gray-500 font-black">
-                  SANASI
+                  SAVDO SANASI
                 </span>
                 <span className="font-black text-[#18436E]">
-                  {new Date(protocol.createdAt).toLocaleDateString("uz-UZ")} yil
+                  {new Date(
+                    protocol.lotData?.startDate || protocol.createdAt,
+                  ).toLocaleDateString("uz-UZ")}
                 </span>
               </div>
             </div>
@@ -167,7 +169,7 @@ export default function VerifyProtocol({ params }) {
               <div className="grid grid-cols-2 gap-4 border-t border-white/10 pt-4">
                 <div>
                   <span className="text-[9px] text-gray-500 font-black block mb-1">
-                    JSHSHIR
+                    Go'lib ma'lumotlari
                   </span>
                   <span className="text-xs font-bold text-gray-300">
                     {protocol.winnerData?.jshshir || "—"}

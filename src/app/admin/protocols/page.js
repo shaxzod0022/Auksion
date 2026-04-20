@@ -29,7 +29,7 @@ export default function AdminProtocols() {
     status: "active",
     manualData: {
       lotNumber: "",
-      organizer: "“uai” mchj nf – uai.uz",
+      organizer: "“uainf-auksion” mchj nf – uainf-auksion.uz",
       auctionType:
         "Narxi oshib borish tartibida o'tkaziladigan ochiq elektron onlayn auktsion savdosi. Xususiy buyurtmalar",
       basisDocument: "Buyurtma asosida olingan.",
@@ -70,7 +70,7 @@ export default function AdminProtocols() {
       status: "active",
       manualData: {
         lotNumber: "",
-        organizer: "“uai” mchj nf – uai.uz",
+        organizer: "“uainf-auksion” mchj nf – uainf-auksion.uz",
         auctionType:
           "Narxi oshib borish tartibida o'tkaziladigan ochiq elektron onlayn auktsion savdosi. Xususiy buyurtmalar",
         basisDocument: "Buyurtma asosida olingan.",
@@ -212,7 +212,7 @@ export default function AdminProtocols() {
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Raqami</th>
+                <th>Lot №</th>
                 <th>Lot Nomi / Raqami</th>
                 <th>G'olib</th>
                 <th>G'olib PINFL</th>
@@ -224,7 +224,11 @@ export default function AdminProtocols() {
               {protocols.map((p) => (
                 <tr key={p._id}>
                   <td>
-                    <strong>{p.protocolNumber}</strong>
+                    <strong>
+                      {p.isManual
+                        ? p.manualData?.lotNumber
+                        : p.lot?.lotNumber || "—"}
+                    </strong>
                   </td>
                   <td>
                     <div>{p.lot?.name || "O'chirilgan lot"}</div>
@@ -574,11 +578,11 @@ export default function AdminProtocols() {
 
                   <div style={{ marginBottom: "1rem" }}>
                     <label className="admin-label">
-                      G'olib JSHSHIR (PINFL)
+                      G'olib haqida ma'lumotlar
                     </label>
                     <input
                       className="admin-input"
-                      placeholder="Masalan: 12345678901234"
+                      placeholder="JSHSHIR, pasport yoki boshqa ma'lumotlar"
                       value={formData.manualData.winnerJshshir}
                       onChange={(e) =>
                         setFormData({
