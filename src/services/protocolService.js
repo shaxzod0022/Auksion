@@ -21,10 +21,17 @@ const protocolService = {
   },
 
   createManualProtocol: async (data) => {
+    const isFormData = data instanceof FormData;
+    const headers = { ...getAuthHeaders() };
+
+    if (isFormData) {
+      delete headers["Content-Type"];
+    }
+
     const response = await fetch(`${API_URL}/manual`, {
       method: "POST",
-      headers: getAuthHeaders(),
-      body: JSON.stringify(data),
+      headers: headers,
+      body: isFormData ? data : JSON.stringify(data),
     });
     return response.json();
   },

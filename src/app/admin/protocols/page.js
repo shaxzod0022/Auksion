@@ -11,6 +11,8 @@ import {
   X,
   Save,
   Trash2,
+  Image as ImageIcon,
+  CheckCircle2,
 } from "lucide-react";
 import protocolService from "@/services/protocolService";
 import { formatDateForInput } from "@/utils/dateUtils";
@@ -22,6 +24,7 @@ export default function AdminProtocols() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState([]);
 
   const [formData, setFormData] = useState({
     protocolNumber: "",
@@ -84,6 +87,7 @@ export default function AdminProtocols() {
         attributes: [{ key: "", value: "" }],
       },
     });
+    setSelectedFiles([]);
     setIsModalOpen(true);
   };
 
@@ -122,14 +126,57 @@ export default function AdminProtocols() {
     });
   };
 
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    // Append new files, and cap at 4
+    setSelectedFiles((prev) => [...prev, ...files].slice(0, 4));
+  };
+
+  const removeFile = (index) => {
+    const newFiles = [...selectedFiles];
+    newFiles.splice(index, 1);
+    setSelectedFiles(newFiles);
+  };
+
+  const getStatusMessage = () => {
+    const count = selectedFiles.length;
+    if (count === 0)
+      return { text: "Rasm yuklash majburiy emas", color: "#64748b" };
+    if (count === 1)
+      return { text: "Kamida 2 ta rasm yuklang", color: "#ef4444" };
+    if (count >= 2 && count <= 4)
+      return { text: `Zo'r! ${count} ta rasm tanlandi`, color: "#22c55e" };
+    return { text: "Ko'pi bilan 4 ta rasm yuklang", color: "#ef4444" };
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (
+      selectedFiles.length > 0 &&
+      (selectedFiles.length < 2 || selectedFiles.length > 4)
+    ) {
+      alert("Iltimos, kamida 2 ta va ko'pi bilan 4 ta rasm tanlang");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
-      const res = await protocolService.createManualProtocol(formData);
+      const fd = new FormData();
+      fd.append("protocolNumber", formData.protocolNumber);
+      fd.append("participantsList", formData.participantsList);
+      fd.append("status", formData.status);
+      fd.append("manualData", JSON.stringify(formData.manualData));
+
+      selectedFiles.forEach((file) => {
+        fd.append("images", file);
+      });
+
+      const res = await protocolService.createManualProtocol(fd);
       if (res.protocol) {
         fetchProtocols();
         setIsModalOpen(false);
+        setSelectedFiles([]);
         alert("Bayonnoma muvaffaqiyatli yaratildi");
       } else {
         alert(res.message || "Xatolik");
@@ -215,7 +262,6 @@ export default function AdminProtocols() {
                 <th>Lot №</th>
                 <th>Lot Nomi / Raqami</th>
                 <th>G'olib</th>
-                <th>G'olib PINFL</th>
                 <th>Status</th>
                 <th style={{ textAlign: "right" }}>Amallar</th>
               </tr>
@@ -227,30 +273,35 @@ export default function AdminProtocols() {
                     <strong>
                       {p.isManual
                         ? p.manualData?.lotNumber
-                        : p.lot?.lotNumber || "—"}
+                        : p.lot?.lotNumber || p.manualData?.lotNumber || "—"}
                     </strong>
                   </td>
                   <td>
-                    <div>{p.lot?.name || "O'chirilgan lot"}</div>
+                    <div style={{ fontWeight: "500" }}>
+                      {p.lot?.name ||
+                        p.manualData?.description ||
+                        "O'chirilgan lot"}
+                    </div>
                     <div
                       style={{
                         fontSize: "0.75rem",
                         color: "var(--admin-text-muted)",
                       }}
                     >
-                      Lot: {p.lot?.lotNumber || "-"}
+                      Lot: {p.lot?.lotNumber || p.manualData?.lotNumber || "-"}
                     </div>
                   </td>
                   <td>
                     {p.winner ? (
                       `${p.winner.lastName} ${p.winner.firstName}`
+                    ) : p.manualData?.winnerName ? (
+                      p.manualData.winnerName
                     ) : (
                       <span style={{ color: "var(--admin-text-muted)" }}>
                         Noma'lum g'olib
                       </span>
                     )}
                   </td>
-                  <td>{p.winner?.jshshir || "-"}</td>
                   <td>
                     <span
                       style={{
@@ -539,11 +590,10 @@ export default function AdminProtocols() {
                   </h3>
 
                   <div style={{ marginBottom: "1rem" }}>
-                    <label className="admin-label">Obyekt tavsifi</label>
-                    <textarea
+                    <label className="admin-label">Lot nomi</label>
+                    <input
                       className="admin-input"
-                      rows="3"
-                      placeholder="Obyekt haqida qisqacha ma'lumot..."
+                      placeholder="Lot nomi..."
                       value={formData.manualData.description}
                       onChange={(e) =>
                         setFormData({
@@ -762,6 +812,171 @@ export default function AdminProtocols() {
                     </button>
                   </div>
                 ))}
+              </div>
+
+              {/* Sequential Grid Images Section */}
+              <div
+                className="admin-card"
+                style={{ padding: "1.5rem", marginBottom: "1.5rem" }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    marginBottom: "1.25rem",
+                  }}
+                >
+                  <h3
+                    style={{
+                      fontSize: "1rem",
+                      fontWeight: "600",
+                      color: "var(--admin-accent)",
+                    }}
+                  >
+                    Obyekt rasmlari (2 yoki 4 ta)
+                  </h3>
+                  <div
+                    style={{
+                      backgroundColor: getStatusMessage().color + "20",
+                      color: getStatusMessage().color,
+                      padding: "4px 12px",
+                      borderRadius: "99px",
+                      fontSize: "0.75rem",
+                      fontWeight: "600",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "4px",
+                    }}
+                  >
+                    {selectedFiles.length >= 2 && selectedFiles.length <= 4 && (
+                      <CheckCircle2 size={14} />
+                    )}
+                    {getStatusMessage().text}
+                  </div>
+                </div>
+
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns:
+                      "repeat(auto-fill, minmax(120px, 120px))",
+                    gap: "1rem",
+                  }}
+                >
+                  {/* Existing Previews */}
+                  {selectedFiles.map((file, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        position: "relative",
+                        width: "120px",
+                        height: "120px",
+                        borderRadius: "12px",
+                        overflow: "hidden",
+                        border: "1px solid #e2e8f0",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                      }}
+                    >
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt="Preview"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => removeFile(idx)}
+                        style={{
+                          position: "absolute",
+                          top: "6px",
+                          right: "6px",
+                          backgroundColor: "rgba(255, 255, 255, 0.9)",
+                          color: "#ef4444",
+                          border: "none",
+                          borderRadius: "50%",
+                          width: "24px",
+                          height: "24px",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                          zIndex: 10,
+                        }}
+                        title="O'chirish"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+
+                  {/* Plus Button Slot */}
+                  {selectedFiles.length < 4 && (
+                    <div
+                      onClick={() =>
+                        document.getElementById("fileInput").click()
+                      }
+                      style={{
+                        width: "120px",
+                        height: "120px",
+                        borderRadius: "12px",
+                        border: "2px dashed #cbd5e1",
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        transition: "all 0.2s",
+                        backgroundColor: "#f8fafc",
+                        color: "#64748b",
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.borderColor =
+                          "var(--admin-accent)";
+                        e.currentTarget.style.color = "var(--admin-accent)";
+                        e.currentTarget.style.backgroundColor = "#eff6ff";
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.borderColor = "#cbd5e1";
+                        e.currentTarget.style.color = "#64748b";
+                        e.currentTarget.style.backgroundColor = "#f8fafc";
+                      }}
+                    >
+                      <Plus size={32} />
+                      <span
+                        style={{
+                          fontSize: "0.75rem",
+                          fontWeight: "500",
+                          marginTop: "4px",
+                        }}
+                      >
+                        Qo'shish
+                      </span>
+                      <input
+                        id="fileInput"
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        style={{ display: "none" }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                <p
+                  style={{
+                    fontSize: "0.8rem",
+                    color: "var(--admin-text-muted)",
+                    marginTop: "1rem",
+                  }}
+                >
+                  Pdf faylda rasmlar 2x2 grid (katakcha) ko'rinishida chiqadi.
+                </p>
               </div>
 
               <div>

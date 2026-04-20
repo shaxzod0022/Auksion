@@ -3,15 +3,15 @@
 import { useState, useEffect } from "react";
 import { useAdminAuth } from "@/context/AdminAuthContext";
 import { getDashboardStats } from "@/services/adminService";
-import { 
-  Users, 
-  ClipboardList, 
-  FolderTree, 
-  Package, 
-  Newspaper, 
+import {
+  Users,
+  ClipboardList,
+  FolderTree,
+  Package,
+  Newspaper,
   MessageSquare,
   ShieldCheck,
-  Loader2
+  Loader2,
 } from "lucide-react";
 
 export default function AdminPage() {
@@ -31,19 +31,65 @@ export default function AdminPage() {
   }, []);
 
   const stats = [
-    { name: "Adminlar", value: statsData?.admins || 0, icon: ShieldCheck, color: "#6366f1" },
-    { name: "Foydalanuvchilar", value: statsData?.users || 0, icon: Users, color: "#38bdf8" },
-    { name: "Lotlar", value: statsData?.lots || 0, icon: ClipboardList, color: "#4ade80" },
-    { name: "Kategoriyalar", value: statsData?.categories || 0, icon: FolderTree, color: "#fbbf24" },
-    { name: "Lot turlari", value: statsData?.lotTypes || 0, icon: Package, color: "#f87171" },
-    { name: "Yangiliklar", value: statsData?.news || 0, icon: Newspaper, color: "#a855f7" },
-    { name: "Xabarlar", value: statsData?.contacts || 0, icon: MessageSquare, color: "#ec4899" },
+    {
+      name: "Adminlar",
+      value: statsData?.admins || 0,
+      icon: ShieldCheck,
+      color: "#6366f1",
+    },
+    {
+      name: "Foydalanuvchilar",
+      value: statsData?.users || 0,
+      icon: Users,
+      color: "#38bdf8",
+    },
+    {
+      name: "Lotlar",
+      value: statsData?.lots || 0,
+      icon: ClipboardList,
+      color: "#4ade80",
+    },
+    {
+      name: "Kategoriyalar",
+      value: statsData?.categories || 0,
+      icon: FolderTree,
+      color: "#fbbf24",
+    },
+    {
+      name: "Lot turlari",
+      value: statsData?.lotTypes || 0,
+      icon: Package,
+      color: "#f87171",
+    },
+    {
+      name: "Yangiliklar",
+      value: statsData?.news || 0,
+      icon: Newspaper,
+      color: "#a855f7",
+    },
+    {
+      name: "Xabarlar",
+      value: statsData?.contacts || 0,
+      icon: MessageSquare,
+      color: "#ec4899",
+    },
   ];
 
   if (loading) {
     return (
-      <div style={{ height: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-        <Loader2 className="animate-spin" size={40} color="var(--admin-accent)" />
+      <div
+        style={{
+          height: "60vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Loader2
+          className="animate-spin"
+          size={40}
+          color="var(--admin-accent)"
+        />
       </div>
     );
   }
@@ -68,7 +114,12 @@ export default function AdminPage() {
             <div
               key={stat.name}
               className="admin-card"
-              style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "1.25rem" }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "1rem",
+                padding: "1.25rem",
+              }}
             >
               <div
                 style={{
@@ -91,30 +142,19 @@ export default function AdminPage() {
                 >
                   {stat.name}
                 </p>
-                <p style={{ fontSize: "1.25rem", fontWeight: "800", color: "var(--admin-text-dark)" }}>
+                <p
+                  style={{
+                    fontSize: "1.25rem",
+                    fontWeight: "800",
+                    color: "var(--admin-text-dark)",
+                  }}
+                >
                   {stat.value}
                 </p>
               </div>
             </div>
           );
         })}
-      </div>
-
-      <div className="admin-card" style={{ padding: "2rem" }}>
-        <h2
-          style={{
-            fontSize: "1.25rem",
-            fontWeight: "800",
-            marginBottom: "1.5rem",
-            color: "var(--admin-text-dark)",
-          }}
-        >
-          Tizim Holati
-        </h2>
-        <div style={{ color: "var(--admin-text-muted)", fontSize: "0.875rem", lineHeight: "1.6" }}>
-          <p>Hozirda tizim barqaror ishlamoqda. Jami <strong>{statsData?.lots} ta</strong> lot auksionga qo'yilgan.</p>
-          <p style={{ marginTop: "0.5rem" }}>Foydalanuvchilar soni: <strong>{statsData?.users} ta</strong>.</p>
-        </div>
       </div>
     </div>
   );
