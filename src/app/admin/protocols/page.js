@@ -73,7 +73,7 @@ export default function AdminProtocols() {
       status: "active",
       manualData: {
         lotNumber: "",
-        organizer: "“uainf-auksion” mchj nf – uainf-auksion.uz",
+        organizer: "uainf-auksion.uz",
         auctionType:
           "Narxi oshib borish tartibida o'tkaziladigan ochiq elektron onlayn auktsion savdosi. Xususiy buyurtmalar",
         basisDocument: "Buyurtma asosida olingan.",
