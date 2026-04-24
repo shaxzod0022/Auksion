@@ -59,6 +59,22 @@ const protocolService = {
     return response.json();
   },
 
+  updateProtocol: async (id, data) => {
+    const isFormData = data instanceof FormData;
+    const headers = { ...getAuthHeaders() };
+
+    if (isFormData) {
+      delete headers["Content-Type"];
+    }
+
+    const response = await fetch(`${API_URL}/${id}`, {
+      method: "PUT",
+      headers: headers,
+      body: isFormData ? data : JSON.stringify(data),
+    });
+    return response.json();
+  },
+
   getDownloadUrl: (id) => {
     return `${API_URL}/${id}/download`;
   },

@@ -13,6 +13,7 @@ import {
   Trash2,
   Image as ImageIcon,
   CheckCircle2,
+  Pencil,
 } from "lucide-react";
 import protocolService from "@/services/protocolService";
 import { formatDateForInput } from "@/utils/dateUtils";
@@ -23,6 +24,9 @@ export default function AdminProtocols() {
   const [error, setError] = useState("");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [existingImages, setExistingImages] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
 
@@ -67,6 +71,8 @@ export default function AdminProtocols() {
   };
 
   const handleOpenModal = () => {
+    setIsEditing(false);
+    setEditingId(null);
     setFormData({
       protocolNumber: "",
       participantsList: "",
@@ -85,6 +91,57 @@ export default function AdminProtocols() {
         winnerAddress: "",
         startDate: formatDateForInput(new Date()),
         attributes: [{ key: "", value: "" }],
+      },
+    });
+    setSelectedFiles([]);
+    setExistingImages([]);
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (protocol) => {
+    setIsEditing(true);
+    setEditingId(protocol._id);
+    setExistingImages(protocol.images || []);
+    setFormData({
+      protocolNumber: protocol.protocolNumber || "",
+      participantsList: protocol.participantsList || "",
+      status: protocol.status || "active",
+      manualData: {
+        lotNumber:
+          protocol.manualData?.lotNumber || protocol.lot?.lotNumber || "",
+        organizer: protocol.manualData?.organizer || "uainf-auksion.uz",
+        auctionType:
+          protocol.manualData?.auctionType ||
+          "Narxi oshib borish tartibida o'tkaziladigan ochiq elektron onlayn auktsion savdosi. Xususiy buyurtmalar",
+        basisDocument:
+          protocol.manualData?.basisDocument || "Buyurtma asosida olingan.",
+        description:
+          protocol.manualData?.description || protocol.lot?.name || "",
+        startPrice:
+          protocol.manualData?.startPrice || protocol.lot?.startPrice || "",
+        finalPrice:
+          protocol.finalPrice || protocol.manualData?.finalPrice || "",
+        winnerName:
+          protocol.manualData?.winnerName ||
+          (protocol.winner
+            ? `${protocol.winner.lastName} ${protocol.winner.firstName}`
+            : ""),
+        winnerJshshir:
+          protocol.manualData?.winnerJshshir || protocol.winner?.jshshir || "",
+        winnerAddress:
+          protocol.manualData?.winnerAddress ||
+          (protocol.winner?.fullAddress
+            ? `${protocol.winner.fullAddress.region}, ${protocol.winner.fullAddress.city}`
+            : ""),
+        startDate: formatDateForInput(
+          protocol.manualData?.startDate ||
+            protocol.lot?.startDate ||
+            new Date(),
+        ),
+        attributes:
+          protocol.manualData?.attributes?.length > 0
+            ? protocol.manualData.attributes
+            : [{ key: "", value: "" }],
       },
     });
     setSelectedFiles([]);
@@ -130,6 +187,8 @@ export default function AdminProtocols() {
     const files = Array.from(e.target.files);
     // Append new files, and cap at 4
     setSelectedFiles((prev) => [...prev, ...files].slice(0, 4));
+    // Clear existing images if new ones are selected, since we replace them
+    setExistingImages([]);
   };
 
   const removeFile = (index) => {
@@ -139,7 +198,7 @@ export default function AdminProtocols() {
   };
 
   const getStatusMessage = () => {
-    const count = selectedFiles.length;
+    const count = selectedFiles.length || existingImages.length;
     if (count === 0)
       return { text: "Rasm yuklash majburiy emas", color: "#64748b" };
     if (count === 1)
@@ -172,12 +231,22 @@ export default function AdminProtocols() {
         fd.append("images", file);
       });
 
-      const res = await protocolService.createManualProtocol(fd);
+      let res;
+      if (isEditing) {
+        res = await protocolService.updateProtocol(editingId, fd);
+      } else {
+        res = await protocolService.createManualProtocol(fd);
+      }
+
       if (res.protocol) {
         fetchProtocols();
         setIsModalOpen(false);
         setSelectedFiles([]);
-        alert("Bayonnoma muvaffaqiyatli yaratildi");
+        alert(
+          isEditing
+            ? "Bayonnoma muvaffaqiyatli yangilandi"
+            : "Bayonnoma muvaffaqiyatli yaratildi",
+        );
       } else {
         alert(res.message || "Xatolik");
       }
@@ -353,6 +422,17 @@ export default function AdminProtocols() {
                         )}
                       </button>
                       <button
+                        onClick={() => handleEdit(p)}
+                        className="admin-nav-item"
+                        style={{
+                          padding: "0.5rem",
+                          color: "var(--admin-accent)",
+                        }}
+                        title="Tahrirlash"
+                      >
+                        <Pencil size={18} />
+                      </button>
+                      <button
                         onClick={() => handleDelete(p._id)}
                         className="admin-nav-item"
                         style={{
@@ -401,7 +481,9 @@ export default function AdminProtocols() {
               }}
             >
               <h2 style={{ fontSize: "1.25rem", fontWeight: "bold" }}>
-                Yangi Bayonnoma Yaratish (To'liq Manual)
+                {isEditing
+                  ? "Bayonnomani Tahrirlash"
+                  : "Yangi Bayonnoma Yaratish (To'liq Manual)"}
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -864,10 +946,39 @@ export default function AdminProtocols() {
                     gap: "1rem",
                   }}
                 >
-                  {/* Existing Previews */}
+                  {/* Existing Previews (from server) */}
+                  {isEditing &&
+                    existingImages.length > 0 &&
+                    selectedFiles.length === 0 &&
+                    existingImages.map((imgName, idx) => (
+                      <div
+                        key={`existing-${idx}`}
+                        style={{
+                          position: "relative",
+                          width: "120px",
+                          height: "120px",
+                          borderRadius: "12px",
+                          overflow: "hidden",
+                          border: "1px solid #e2e8f0",
+                          boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
+                        }}
+                      >
+                        <img
+                          src={`https://considerate-integrity-production.up.railway.app/upload/${imgName}`}
+                          alt="Existing"
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </div>
+                    ))}
+
+                  {/* New Selected Previews */}
                   {selectedFiles.map((file, idx) => (
                     <div
-                      key={idx}
+                      key={`new-${idx}`}
                       style={{
                         position: "relative",
                         width: "120px",
@@ -1012,7 +1123,9 @@ export default function AdminProtocols() {
                   ) : (
                     <Save size={20} />
                   )}
-                  Bayonnoma yaratish va saqlash
+                  {isEditing
+                    ? "Saqlash va Yangilash"
+                    : "Bayonnoma yaratish va saqlash"}
                 </button>
               </div>
             </form>
