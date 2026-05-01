@@ -19,7 +19,7 @@ export default async function CategoryLotsPage({ params, searchParams }) {
   const fetchCategory = async () => {
     try {
       const res = await fetch(
-        `https://considerate-integrity-production.up.railway.app/api/category/slug/${slug}`,
+        `http://localhost:8080/api/category/slug/${slug}`,
         {
           next: { revalidate: 60 },
         },
@@ -45,7 +45,7 @@ export default async function CategoryLotsPage({ params, searchParams }) {
       });
 
       const res = await fetch(
-        `https://considerate-integrity-production.up.railway.app/api/lot?${query.toString()}`,
+        `http://localhost:8080/api/lot?${query.toString()}`,
         {
           next: { revalidate: 60 },
         },

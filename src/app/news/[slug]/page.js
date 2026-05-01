@@ -10,24 +10,26 @@ export async function generateMetadata({ params }) {
       return { title: "Yangilik topilmadi" };
     }
 
+    const imageUrl = news.image ? `http://localhost:8080/upload/${news.image}` : "/og.jpg";
+
     return {
-      title: `${news.name} | Universal Auksion Invest`,
+      title: `${news.name} | Yangiliklar | Universal Auksion Invest`,
       description: news.shortDescription,
       openGraph: {
         title: news.name,
         description: news.shortDescription,
-        images: [
-          `https://considerate-integrity-production.up.railway.app/upload/${news.image}`,
-        ],
+        images: [imageUrl],
         type: "article",
+        publishedTime: news.createdAt,
       },
       twitter: {
         card: "summary_large_image",
         title: news.name,
         description: news.shortDescription,
-        images: [
-          `https://considerate-integrity-production.up.railway.app/upload/${news.image}`,
-        ],
+        images: [imageUrl],
+      },
+      alternates: {
+        canonical: `/news/${slug}`,
       },
     };
   } catch (error) {
@@ -49,9 +51,29 @@ export default async function NewsDetailPage({ params }) {
     notFound();
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: news.name,
+    image: [news.image ? `http://localhost:8080/upload/${news.image}` : ""],
+    datePublished: news.createdAt,
+    dateModified: news.updatedAt,
+    description: news.shortDescription,
+    author: {
+      "@type": "Organization",
+      name: "Universal Auksion Invest",
+      url: "https://www.uainf-auksion.uz",
+    },
+  };
+
   return (
     <main className="bg-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <NewsContent data={news} />
     </main>
   );
 }
+

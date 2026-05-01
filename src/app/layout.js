@@ -9,11 +9,11 @@ const inter = Inter({
 
 export const metadata = {
   title: {
-    default: "Universal Auksion Invest | Barcha onlayn lotlar va savdolar",
+    default: "Universal Auksion Invest | O'zbekistondagi Onlayn Auksion Savdolari",
     template: "%s | Universal Auksion Invest",
   },
   description:
-    "Universal Auksion Invest - ko'chmas mulk, transport, texnika va boshqa ko'plab lotlar bo'yicha shaffof onlayn auksion savdolari platformasi.",
+    "Universal Auksion Invest - ko'chmas mulk, avtotransport, qishloq xo'jaligi texnikalari va boshqa ko'plab lotlar bo'yicha shaffof va qonuniy onlayn auksion platformasi.",
   keywords: [
     "auksion",
     "onlayn savdo",
@@ -23,15 +23,23 @@ export const metadata = {
     "auksion uz",
     "ko'chmas mulk auksioni",
     "avtomobillar savdosi",
+    "texnika auksioni",
+    "uainf-auksion",
+    "universal auksion invest",
+    "auksion savdolari",
+    "g'oliblik bayonnomasi",
   ],
 
-  metadataBase: new URL("https://uainf-auksion.uz"),
+  metadataBase: new URL("https://www.uainf-auksion.uz"),
+  alternates: {
+    canonical: "/",
+  },
 
   openGraph: {
-    title: "Universal Auksion Invest - Onlayn Savdolar va Lotlar",
+    title: "Universal Auksion Invest - Shaffof Onlayn Savdolar",
     description:
-      "Hozirgi faol lotlar bilan tanishing va o'z narxingizni taklif qiling. Biz bilan hammasi shaffof!",
-    url: "https://uainf-auksion.uz",
+      "O'zbekiston bo'ylab eng yaxshi lotlar va auksion savdolari. Ishtirok eting va o'z mulkingizga ega bo'ling!",
+    url: "https://www.uainf-auksion.uz",
     siteName: "Universal Auksion Invest",
     images: [
       {
@@ -47,7 +55,7 @@ export const metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "Universal Auksion Invest | Onlayn Savdolar va Lotlar",
+    title: "Universal Auksion Invest | Onlayn Savdolar",
     description:
       "Siz qidirgan lotlar endi onlayn auksionda. Savdolarda qatnashing va yutib oling!",
     images: ["/og.jpg"],
@@ -76,6 +84,7 @@ export const metadata = {
     },
   },
 };
+
 
 import { ConditionalLayout } from "@/components";
 

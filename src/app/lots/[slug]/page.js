@@ -5,31 +5,44 @@ import { ChevronLeft } from "lucide-react";
 export async function generateMetadata({ params }) {
   const { slug } = await params;
   try {
-    const res = await fetch(
-      `https://considerate-integrity-production.up.railway.app/api/lot/slug/${slug}`,
-    );
+    const res = await fetch(`http://localhost:8080/api/lot/slug/${slug}`);
     const lot = await res.json();
 
+    const imageUrl = lot.image ? `http://localhost:8080/upload/${lot.image}` : "/og.jpg";
+
     return {
-      title: `${lot.name} - Universal Auksion`,
-      description: lot.description?.substring(0, 160),
+      title: `${lot.name} - №${lot.lotNumber} | Universal Auksion`,
+      description: lot.description?.substring(0, 160) || "Lot tafsilotlari va savdo shartlari bilan tanishing.",
+      openGraph: {
+        title: lot.name,
+        description: lot.description?.substring(0, 160),
+        images: [imageUrl],
+        type: "website",
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: lot.name,
+        description: lot.description?.substring(0, 160),
+        images: [imageUrl],
+      },
+      alternates: {
+        canonical: `/lots/${slug}`,
+      },
     };
   } catch (error) {
     return { title: "Lot ma'lumotlari - Universal Auksion" };
   }
 }
 
+
 export default async function LotDetailPage({ params }) {
   const { slug } = await params;
 
   const fetchLotData = async () => {
     try {
-      const res = await fetch(
-        `https://considerate-integrity-production.up.railway.app/api/lot/slug/${slug}`,
-        {
-          next: { revalidate: 60 },
-        },
-      );
+      const res = await fetch(`http://localhost:8080/api/lot/slug/${slug}`, {
+        next: { revalidate: 60 },
+      });
       if (!res.ok) return null;
       return res.json();
     } catch (error) {
@@ -63,9 +76,30 @@ export default async function LotDetailPage({ params }) {
     );
   }
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: lot.name,
+    image: lot.image ? `http://localhost:8080/upload/${lot.image}` : "",
+    description: lot.description,
+    sku: lot.lotNumber,
+    offers: {
+      "@type": "Offer",
+      price: lot.startPrice,
+      priceCurrency: "UZS",
+      availability: "https://schema.org/InStock",
+      url: `https://www.uainf-auksion.uz/lots/${slug}`,
+    },
+  };
+
   return (
     <main className="bg-gray-200 min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <LotHero title={lot.name} image={lot.image} />
+
 
       <div className="max-w-[1440px] mx-auto px-5 md:px-10 py-10">
         <div className="flex items-center justify-between mb-2">

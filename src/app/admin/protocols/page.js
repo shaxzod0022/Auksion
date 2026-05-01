@@ -395,7 +395,7 @@ export default function AdminProtocols() {
                       }}
                     >
                       <a
-                        href={`https://considerate-integrity-production.up.railway.app/api/protocol/${p._id}/download`}
+                        href={`http://localhost:8080/api/protocol/${p._id}/download`}
                         target="_blank"
                         rel="noreferrer"
                         className="admin-nav-item"
@@ -964,7 +964,7 @@ export default function AdminProtocols() {
                         }}
                       >
                         <img
-                          src={`https://considerate-integrity-production.up.railway.app/upload/${imgName}`}
+                          src={`http://localhost:8080/upload/${imgName}`}
                           alt="Existing"
                           style={{
                             width: "100%",

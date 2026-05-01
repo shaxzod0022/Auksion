@@ -69,9 +69,7 @@ export default function AdminAuctionRoom({ params }) {
         setLot(lotData);
         setCurrentPrice(lotData.startPrice);
 
-        const socketInstance = io(
-          "https://considerate-integrity-production.up.railway.app",
-        );
+        const socketInstance = io("http://localhost:8080");
         setSocket(socketInstance);
 
         // LISTENERS BEFORE EMIT TO ENSURE STATE IS CAPTURED ON RECONNECT/REFRESH
@@ -383,7 +381,7 @@ export default function AdminAuctionRoom({ params }) {
 
           {phase === "ended" && lastBidder && protocolId && (
             <a
-              href={`https://considerate-integrity-production.up.railway.app/api/protocol/${protocolId}/download`}
+              href={`http://localhost:8080/api/protocol/${protocolId}/download`}
               download
               className="bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-sm font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 transition-colors shadow-lg"
             >

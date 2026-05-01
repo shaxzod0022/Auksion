@@ -2,7 +2,7 @@
 import { styles } from "@/styles/styles";
 import { useRouter } from "next/navigation";
 
-const API_BASE_URL = "https://considerate-integrity-production.up.railway.app";
+const API_BASE_URL = "http://localhost:8080";
 
 export default function Categories({ initialData = [] }) {
   const router = useRouter();

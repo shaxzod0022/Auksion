@@ -2,29 +2,19 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Hash, ArrowRight } from "lucide-react";
+import { Search, Hash, ArrowRight, FileText } from "lucide-react";
 
 export default function HomeSearchBar() {
   const router = useRouter();
-  const [formData, setFormData] = useState({
-    lotNumber: "",
-    name: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  const [query, setQuery] = useState("");
 
   const handleSearch = (e) => {
     e.preventDefault();
-    if (!formData.lotNumber && !formData.name) return;
+    if (!query.trim()) return;
 
-    const query = new URLSearchParams();
-    if (formData.lotNumber) query.set("lotNumber", formData.lotNumber);
-    if (formData.name) query.set("name", formData.name);
-
-    router.push(`/lots/lots?${query.toString()}`);
+    // Check if query looks like a number (lot or protocol)
+    // For now, we redirect to the unified search page for all queries
+    router.push(`/search?q=${encodeURIComponent(query.trim())}`);
   };
 
   return (
@@ -34,45 +24,21 @@ export default function HomeSearchBar() {
           onSubmit={handleSearch}
           className="flex flex-col lg:flex-row items-stretch lg:items-center gap-6"
         >
-          {/* Lot Number Input */}
+          {/* Unified Search Input */}
           <div className="flex-1 group">
             <label className="text-[10px] font-black text-[#18436E] uppercase tracking-[0.2em] mb-2 block px-2 opacity-50 group-focus-within:opacity-100 transition-opacity">
-              Lot raqami
+              Lot raqami, Bayonnoma yoki Kalit so'z
             </label>
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-[#18436E] group-focus-within:bg-[#18436E] group-focus-within:text-white transition-all duration-300">
-                <Hash size={18} />
+                {query.match(/^\d+$/) ? <Hash size={18} /> : <Search size={18} />}
               </div>
               <input
                 type="text"
-                name="lotNumber"
-                placeholder="Masalan: 12345678"
+                placeholder="Masalan: 12345678 yoki 'Spark'..."
                 className="w-full pl-16 pr-4 py-5 bg-gray-50/50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-[#18436E]/10 focus:ring-4 focus:ring-[#18436E]/5 outline-none transition-all text-gray-800 placeholder:text-gray-300 font-medium"
-                value={formData.lotNumber}
-                onChange={handleChange}
-              />
-            </div>
-          </div>
-
-          {/* Separator Line (Desktop only) */}
-          <div className="hidden lg:block w-px h-16 bg-gradient-to-b from-transparent via-gray-100 to-transparent self-end mb-1" />
-
-          {/* Lot Name Input */}
-          <div className="flex-[1.5] group">
-            <label className="text-[10px] font-black text-[#18436E] uppercase tracking-[0.2em] mb-2 block px-2 opacity-50 group-focus-within:opacity-100 transition-opacity">
-              Mulk nomi yoki kalit so'z
-            </label>
-            <div className="relative">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-[#18436E] group-focus-within:bg-[#18436E] group-focus-within:text-white transition-all duration-300">
-                <Search size={18} />
-              </div>
-              <input
-                type="text"
-                name="name"
-                placeholder="Nima qidiryapsiz? (Masalan: Uy, Spark, ...) "
-                className="w-full pl-16 pr-4 py-5 bg-gray-50/50 border-2 border-transparent rounded-2xl focus:bg-white focus:border-[#18436E]/10 focus:ring-4 focus:ring-[#18436E]/5 outline-none transition-all text-gray-800 placeholder:text-gray-300 font-medium"
-                value={formData.name}
-                onChange={handleChange}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
               />
             </div>
           </div>
@@ -81,7 +47,7 @@ export default function HomeSearchBar() {
           <div className="lg:pt-6">
             <button
               type="submit"
-              className="w-full lg:w-auto bg-[#18436E] hover:bg-[#1e538a] text-white font-black px-10 py-5 rounded-sm shadow-xl shadow-blue-900/20 transition-all active:scale-95 group flex items-center justify-center gap-3 cursor-pointer"
+              className="w-full lg:w-auto bg-[#18436E] hover:bg-[#1e538a] text-white font-black px-12 py-5 rounded-sm shadow-xl shadow-blue-900/20 transition-all active:scale-95 group flex items-center justify-center gap-3 cursor-pointer"
             >
               <span className="uppercase tracking-widest text-sm">
                 Qidirish
@@ -92,23 +58,32 @@ export default function HomeSearchBar() {
         </form>
 
         {/* Quick Tips */}
-        <div className="mt-6 flex flex-wrap items-center gap-4 px-2">
-          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-            Mashhur so'rovlar:
-          </span>
-          {["Yengil avto", "Ko'chmas mulk", "Qishloq xo'jaligi"].map((tag) => (
-            <button
-              key={tag}
-              type="button"
-              onClick={() => {
-                setFormData((prev) => ({ ...prev, name: tag }));
-                // Trigger search immediately if desired
-              }}
-              className="text-[10px] font-bold text-[#18436E]/60 bg-blue-50/50 hover:bg-blue-50 px-3 py-1.5 rounded-full transition-colors cursor-pointer"
-            >
-              {tag}
-            </button>
-          ))}
+        <div className="mt-6 flex flex-wrap items-center gap-6 px-2">
+          <div className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+              Mashhur so'rovlar:
+            </span>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            {["Yengil avto", "Ko'chmas mulk", "Qishloq xo'jaligi"].map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => setQuery(tag)}
+                className="text-[10px] font-bold text-[#18436E]/60 bg-blue-50/50 hover:bg-blue-50 px-3 py-1.5 rounded-full transition-colors cursor-pointer border border-transparent hover:border-blue-100"
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
+          
+          <div className="hidden md:flex items-center gap-4 ml-auto border-l border-gray-100 pl-6">
+             <div className="flex items-center gap-2 text-green-600 opacity-60">
+                <FileText size={14} />
+                <span className="text-[9px] font-black uppercase tracking-widest">Bayonnomalar qidiruvi faol</span>
+             </div>
+          </div>
         </div>
       </div>
     </div>
