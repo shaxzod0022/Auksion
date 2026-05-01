@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "https://considerate-integrity-production.up.railway.app";
 
 const Timer = ({ targetDate }) => {
   const [timeLeft, setTimeLeft] = useState({

@@ -150,7 +150,9 @@ export default function LotsPage() {
         basisDocument: lot.basisDocument || "",
         attributes: Array.isArray(lot.attributes) ? [...lot.attributes] : [],
       });
-      setImagePreview(`http://localhost:8080/upload/${lot.image}`);
+      setImagePreview(
+        `https://considerate-integrity-production.up.railway.app/upload/${lot.image}`,
+      );
       setSelectedImage(null);
 
       if (lot.province?._id || lot.province) {
@@ -313,7 +315,7 @@ export default function LotsPage() {
     try {
       const token = sessionStorage.getItem("adminToken");
       const res = await fetch(
-        `http://localhost:8080/api/application/lot/${lot._id}`,
+        `https://considerate-integrity-production.up.railway.app/api/application/lot/${lot._id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -331,7 +333,7 @@ export default function LotsPage() {
     try {
       const token = sessionStorage.getItem("adminToken");
       const res = await fetch(
-        `http://localhost:8080/api/application/${appId}/status`,
+        `https://considerate-integrity-production.up.railway.app/api/application/${appId}/status`,
         {
           method: "PUT",
           headers: {
@@ -363,7 +365,7 @@ export default function LotsPage() {
     try {
       const token = sessionStorage.getItem("adminToken");
       const res = await fetch(
-        `http://localhost:8080/api/application/${appId}`,
+        `https://considerate-integrity-production.up.railway.app/api/application/${appId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -456,7 +458,7 @@ export default function LotsPage() {
                       }}
                     >
                       <img
-                        src={`http://localhost:8080/upload/${lot.image}`}
+                        src={`https://considerate-integrity-production.up.railway.app/upload/${lot.image}`}
                         alt={lot.name}
                         style={{
                           width: "100%",
@@ -1433,7 +1435,7 @@ export default function LotsPage() {
                     }}
                   >
                     <img
-                      src={`http://localhost:8080/upload/${previewLot.image}`}
+                      src={`https://considerate-integrity-production.up.railway.app/upload/${previewLot.image}`}
                       alt={previewLot.name}
                       style={{
                         width: "100%",

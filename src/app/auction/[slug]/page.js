@@ -97,7 +97,9 @@ export default function AuctionRoom({ params }) {
         }
 
         // Initialize Socket
-        const socketInstance = io("http://localhost:8080");
+        const socketInstance = io(
+          "https://considerate-integrity-production.up.railway.app",
+        );
         setSocket(socketInstance);
 
         // ALWAYS SET LISTENERS BEFORE EMITTING JOIN TO AVOID RACE CONDITIONS ON REFRESH
@@ -514,7 +516,7 @@ export default function AuctionRoom({ params }) {
                       (lastBidder && lastBidder.userId === userId)) &&
                       protocolId && (
                         <a
-                          href={`http://localhost:8080/api/protocol/${protocolId}/download`}
+                          href={`https://considerate-integrity-production.up.railway.app/api/protocol/${protocolId}/download`}
                           download
                           className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-sm font-black uppercase tracking-widest flex items-center justify-center gap-3 transition-colors shadow-lg"
                         >

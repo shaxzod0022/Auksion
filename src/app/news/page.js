@@ -47,7 +47,7 @@ export default async function NewsPage({ searchParams }) {
 
   try {
     const res = await fetch(
-      `http://localhost:8080/api/news?page=${page}&limit=${limit}`,
+      `https://considerate-integrity-production.up.railway.app/api/news?page=${page}&limit=${limit}`,
       {
         next: { revalidate: 3600 }, // ISR: Revalidate every hour
       },

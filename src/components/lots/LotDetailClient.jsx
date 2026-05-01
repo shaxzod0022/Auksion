@@ -122,7 +122,7 @@ export default function LotDetailClient({ lot }) {
       <div className="flex-1 space-y-4">
         <div className="bg-white p-3 rounded-sm shadow-xl shadow-blue-900/5 overflow-hidden">
           <img
-            src={`http://localhost:8080/upload/${lot.image}`}
+            src={`https://considerate-integrity-production.up.railway.app/upload/${lot.image}`}
             alt={lot.name}
             className="w-full h-auto aspect-video object-cover rounded-sm"
           />

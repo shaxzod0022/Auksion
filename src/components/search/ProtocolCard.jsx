@@ -4,7 +4,7 @@ import Link from "next/link";
 import { FileText, CheckCircle2, ArrowRight } from "lucide-react";
 import { styles } from "@/styles/styles";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "https://considerate-integrity-production.up.railway.app";
 
 export default function ProtocolCard({ protocol }) {
   const lotData = protocol.isManual ? protocol.manualData : protocol.lot;

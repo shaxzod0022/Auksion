@@ -10,7 +10,9 @@ export async function generateMetadata({ params }) {
       return { title: "Yangilik topilmadi" };
     }
 
-    const imageUrl = news.image ? `http://localhost:8080/upload/${news.image}` : "/og.jpg";
+    const imageUrl = news.image
+      ? `https://considerate-integrity-production.up.railway.app/upload/${news.image}`
+      : "/og.jpg";
 
     return {
       title: `${news.name} | Yangiliklar | Universal Auksion Invest`,
@@ -55,7 +57,11 @@ export default async function NewsDetailPage({ params }) {
     "@context": "https://schema.org",
     "@type": "NewsArticle",
     headline: news.name,
-    image: [news.image ? `http://localhost:8080/upload/${news.image}` : ""],
+    image: [
+      news.image
+        ? `https://considerate-integrity-production.up.railway.app/upload/${news.image}`
+        : "",
+    ],
     datePublished: news.createdAt,
     dateModified: news.updatedAt,
     description: news.shortDescription,
@@ -76,4 +82,3 @@ export default async function NewsDetailPage({ params }) {
     </main>
   );
 }
-

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { styles } from "@/styles/styles";
 import ProtocolCard from "@/components/search/ProtocolCard";
 
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "https://considerate-integrity-production.up.railway.app";
 
 function SearchContent() {
   const searchParams = useSearchParams();
