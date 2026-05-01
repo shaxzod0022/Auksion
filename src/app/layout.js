@@ -9,7 +9,8 @@ const inter = Inter({
 
 export const metadata = {
   title: {
-    default: "Universal Auksion Invest | O'zbekistondagi Onlayn Auksion Savdolari",
+    default:
+      "Universal Auksion Invest | O'zbekistondagi Onlayn Auksion Savdolari",
     template: "%s | Universal Auksion Invest",
   },
   description:
@@ -29,6 +30,10 @@ export const metadata = {
     "auksion savdolari",
     "g'oliblik bayonnomasi",
   ],
+
+  verification: {
+    google: "Uww9EX1LtnpqAblF-ydoasnyJm6OwBFG2GbWGaEnXkw",
+  },
 
   metadataBase: new URL("https://www.uainf-auksion.uz"),
   alternates: {
@@ -84,7 +89,6 @@ export const metadata = {
     },
   },
 };
-
 
 import { ConditionalLayout } from "@/components";
 
