@@ -96,9 +96,20 @@ import { ConditionalLayout } from "@/components";
 import ReduxProvider from "@/redux/ReduxProvider";
 
 export default function RootLayout({ children }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Universal Auksion Invest",
+    url: "https://www.uainf-auksion.uz",
+  };
+
   return (
     <html lang="uz" className={`${inter.className} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <ReduxProvider>
           <ConditionalLayout>{children}</ConditionalLayout>
         </ReduxProvider>
