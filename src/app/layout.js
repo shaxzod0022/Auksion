@@ -27,6 +27,7 @@ export const metadata = {
     "texnika auksioni",
     "uainf-auksion",
     "universal auksion invest",
+    "onlayn auksion",
     "auksion savdolari",
     "g'oliblik bayonnomasi",
   ],
