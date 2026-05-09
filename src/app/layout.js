@@ -9,7 +9,8 @@ const inter = Inter({
 
 export const metadata = {
   title: {
-    default: "Universal Auksion Invest | O'zbekistondagi Onlayn Auksion Savdolari",
+    default:
+      "Universal Auksion Invest | O'zbekistondagi Onlayn Auksion Savdolari",
     template: "%s | Universal Auksion Invest",
   },
   description:
@@ -26,9 +27,14 @@ export const metadata = {
     "texnika auksioni",
     "uainf-auksion",
     "universal auksion invest",
+    "onlayn auksion",
     "auksion savdolari",
     "g'oliblik bayonnomasi",
   ],
+
+  verification: {
+    google: "Uww9EX1LtnpqAblF-ydoasnyJm6OwBFG2GbWGaEnXkw",
+  },
 
   metadataBase: new URL("https://www.uainf-auksion.uz"),
   alternates: {
@@ -65,6 +71,7 @@ export const metadata = {
     icon: [
       { url: "/icon.png" },
       { url: "/icon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/icon-48x48.png", sizes: "48x48", type: "image/png" },
       { url: "/icon-192x192.png", sizes: "192x192", type: "image/png" },
     ],
     apple: [
@@ -85,15 +92,25 @@ export const metadata = {
   },
 };
 
-
 import { ConditionalLayout } from "@/components";
 
 import ReduxProvider from "@/redux/ReduxProvider";
 
 export default function RootLayout({ children }) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: "Universal Auksion Invest",
+    url: "https://www.uainf-auksion.uz",
+  };
+
   return (
     <html lang="uz" className={`${inter.className} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <ReduxProvider>
           <ConditionalLayout>{children}</ConditionalLayout>
         </ReduxProvider>

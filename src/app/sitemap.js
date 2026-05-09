@@ -66,7 +66,7 @@ export default async function sitemap() {
     const newsRoutes = newsList.map((news) => ({
       url: `${baseUrl}/news/${news.slug}`,
       lastModified: new Date(news.updatedAt),
-      changeFrequency: "monthly",
+      changeFrequency: "weekly",
       priority: 0.6,
     }));
 
